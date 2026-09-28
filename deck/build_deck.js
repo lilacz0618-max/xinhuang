@@ -8,8 +8,24 @@ const path = require("path");
 const pptxgen = require("pptxgenjs");
 
 const ROOT = path.join(__dirname);
-const FIG = (f) => path.join(ROOT, "figures", f);
-const NUM = JSON.parse(fs.readFileSync(FIG("fig_numbers.json"), "utf8"));
+// ---------------------------------------------------------------- language layer
+// LANG=en (default) builds the English deck. LANG=zh builds the Chinese deck from the SAME layout code:
+// every string handed to addText / addTable / addChart / addNotes is looked up in deck/i18n/zh.json, so
+// positions, sizes and styles are identical by construction. LANG=collect writes all strings to i18n/strings.json.
+const LANG = process.env.LANG_DECK || "en";
+const I18N = LANG === "zh" ? JSON.parse(fs.readFileSync(path.join(ROOT, "i18n", "zh.json"), "utf8")) : {};
+const SEEN = new Set(), MISSING = new Set();
+function tr(s) {
+  if (typeof s !== "string" || s === "") return s;
+  SEEN.add(s);
+  if (LANG !== "zh") return s;
+  if (Object.prototype.hasOwnProperty.call(I18N, s)) return I18N[s];
+  if (!/[a-z]{3,}/.test(s)) return s; // codes, numbers, markers ("R1", "0.10", " [1–3]", "km")
+  MISSING.add(s);
+  return s;
+}
+const FIG = (f) => path.join(ROOT, LANG === "zh" ? "figures_zh" : "figures", f);
+const NUM = JSON.parse(fs.readFileSync(path.join(ROOT, "figures", "fig_numbers.json"), "utf8"));
 
 // ---------------------------------------------------------------- design tokens
 const C = {
@@ -26,8 +42,27 @@ const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE";
 pres.author = "Lilac";
 pres.company = "National University of Singapore";
-pres.title = "Research on Urban–Rural Public Transport in Xinhuang County";
-pres.subject = "Research design and next steps (work in progress)";
+pres.title = tr("Research on Urban–Rural Public Transport in Xinhuang County");
+pres.subject = tr("Research design and next steps (work in progress)");
+// wrap slide methods so every visible string passes through tr()
+const trRuns = (t) => (Array.isArray(t) ? t.map((r) => (r && typeof r === "object" ? Object.assign({}, r, { text: tr(r.text) }) : tr(r))) : tr(t));
+const trCell = (c) => (c && typeof c === "object" ? Object.assign({}, c, { text: trRuns(c.text) }) : tr(c));
+const _addSlide = pres.addSlide.bind(pres);
+pres.addSlide = function (...a) {
+  const sl = _addSlide(...a);
+  const at = sl.addText.bind(sl), ab = sl.addTable.bind(sl), ac = sl.addChart.bind(sl), an = sl.addNotes.bind(sl), ai = sl.addImage.bind(sl);
+  sl.addText = (t, o) => at(trRuns(t), o);
+  sl.addTable = (rows, o) => ab(rows.map((r) => r.map(trCell)), o);
+  sl.addChart = (type, data, o = {}) => {
+    const d = data.map((x) => Object.assign({}, x, { name: tr(x.name), labels: x.labels ? x.labels.map(tr) : x.labels }));
+    const oo = Object.assign({}, o);
+    ["title", "valAxisTitle", "catAxisTitle"].forEach((k) => { if (oo[k]) oo[k] = tr(oo[k]); });
+    return ac(type, d, oo);
+  };
+  sl.addNotes = (t) => an(tr(t));
+  sl.addImage = (o) => ai(Object.assign({}, o, o.altText ? { altText: tr(o.altText) } : {}));
+  return sl;
+};
 
 let SLIDE_NO = 0;
 const TOTAL_MAIN = 39; // numbered main-deck slides (appendix numbered A1...)
@@ -1400,7 +1435,23 @@ function fixParagraphs(xml) {
     return "<a:p>" + head + tail + "</a:p>";
   });
 }
-const out = path.join(ROOT, "Xinhuang_Rural_Transit_Conference.pptx");
+if (LANG === "collect") {
+  fs.mkdirSync(path.join(ROOT, "i18n"), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, "i18n", "strings.json"), JSON.stringify([...SEEN], null, 1));
+  console.log("collected", SEEN.size, "strings");
+  process.exit(0);
+}
+if (LANG === "zh" && MISSING.size) {
+  fs.writeFileSync(path.join(ROOT, "i18n", "missing.json"), JSON.stringify([...MISSING], null, 1));
+  console.error("missing translations:", MISSING.size, "(see deck/i18n/missing.json)");
+  process.exit(1);
+}
+// East Asian font slots: Latin text keeps Calibri/Cambria; Chinese glyphs use YaHei (body) / SimSun (headings)
+function cjkFonts(xml) {
+  if (LANG !== "zh") return xml;
+  return xml.replace(/<a:ea typeface="Calibri"/g, '<a:ea typeface="Microsoft YaHei"').replace(/<a:ea typeface="Cambria"/g, '<a:ea typeface="SimSun"');
+}
+const out = path.join(ROOT, LANG === "zh" ? "Xinhuang_Rural_Transit_Conference_ZH.pptx" : "Xinhuang_Rural_Transit_Conference.pptx");
 const JSZip = require("jszip");
 pres.write({ outputType: "nodebuffer" }).then(async (buf) => {
   const zip = await JSZip.loadAsync(buf);
@@ -1408,7 +1459,7 @@ pres.write({ outputType: "nodebuffer" }).then(async (buf) => {
   for (const name of Object.keys(zip.files)) {
     if (!/^ppt\/slides\/slide\d+\.xml$/.test(name)) continue;
     const xml = await zip.file(name).async("string");
-    const nx = fixParagraphs(xml);
+    const nx = cjkFonts(fixParagraphs(xml));
     if (nx !== xml) { fixed += 1; zip.file(name, nx); }
   }
   const data = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });

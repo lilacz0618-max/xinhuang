@@ -8,6 +8,9 @@ Research on urban–rural public transport in Xinhuang County (Hunan, China) —
 |---|---|
 | `deck/Xinhuang_Rural_Transit_Conference.pptx` | Editable PowerPoint (39 main slides + 5 appendix slides, speaker notes on every slide) |
 | `deck/Xinhuang_Rural_Transit_Conference_preview.pdf` | Quick preview rendered with LibreOffice (font substitutes, so spacing differs slightly from PowerPoint) |
+| `deck/Xinhuang_Rural_Transit_Conference_ZH.pptx` | Chinese version: identical layout, every string translated (citations kept as published) |
+| `deck/Xinhuang_Rural_Transit_Conference_ZH_preview.pdf` | LibreOffice preview of the Chinese version |
+| `deck/i18n/zh.json` | English → Chinese string table used by the builder (edit here to change wording) |
 | `deck/build_deck.js` | pptxgenjs script that builds the deck (all text, tables, native charts and diagrams) |
 | `deck/figures/make_figures.py` | English maps and figures made from `deck/data/` (+ optional Copernicus DEM for hillshade) |
 | `deck/data/` | v5 GeoPackages, village sampling frame, daily calendar, identifiability table, household sample |
@@ -24,6 +27,9 @@ npm install pptxgenjs            # anywhere; then point NODE_PATH at its node_mo
 pip install geopandas matplotlib rasterio pyproj
 XH_DEM_DIR=/path/to/copernicus_tiles python3 deck/figures/make_figures.py   # optional: maps
 NODE_PATH=/path/to/node_modules node deck/build_deck.js
+LANG_DECK=zh python3 deck/figures/make_figures.py                         # Chinese figures -> deck/figures_zh
+LANG_DECK=zh NODE_PATH=/path/to/node_modules node deck/build_deck.js      # Chinese deck (fails if a string is untranslated)
+LANG_DECK=collect NODE_PATH=/path/to/node_modules node deck/build_deck.js # list all strings -> deck/i18n/strings.json
 bash skills/xh-conference-deck/scripts/render_qa.sh                        # validate + render for QA
 ```
 

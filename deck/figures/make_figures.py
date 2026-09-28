@@ -24,11 +24,20 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "..", "data")
 OUT = HERE
 DEM_DIR = os.environ.get("XH_DEM_DIR", "")
+LANG = os.environ.get("LANG_DECK", "en")          # "zh" writes Chinese-labelled figures to deck/figures_zh
+if LANG == "zh":
+    OUT = os.path.join(HERE, "..", "figures_zh")
+    os.makedirs(OUT, exist_ok=True)
+ZH = {}
+
+
+def t(s):
+    return ZH.get(s, s) if LANG == "zh" else s
 
 LOCAL = "+proj=tmerc +lat_0=0 +lon_0=109.1 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m"
 
 mpl.rcParams.update({
-    "font.family": "Carlito", "font.size": 9, "axes.linewidth": 0.6,
+    "font.family": ["Carlito", "Noto Sans CJK SC"], "font.size": 9, "axes.linewidth": 0.6,
     "savefig.dpi": 240, "figure.dpi": 100, "axes.edgecolor": "#6b7280",
     "xtick.color": "#4b5563", "ytick.color": "#4b5563", "text.color": "#1f2937",
 })
@@ -52,6 +61,35 @@ MARKET_EN = {"扶罗镇": "Fuluo", "波洲镇": "Bozhou", "中寨镇": "Zhongzha
 NEIGH_EN = {"芷江县": "Zhijiang", "玉屏侗族自治县": "Yuping", "万山区": "Wanshan",
             "天柱县": "Tianzhu", "岑巩县": "Cengong", "三穗县": "Sansui", "镇远县": "Zhenyuan",
             "麻阳苗族自治县": "Mayang"}
+if LANG == "zh":
+    ROUTE_EN = {"R1": "扶罗", "R2": "贡溪", "R3": "步头降", "R4": "米贝", "R5": "凉伞", "R6": "晏家", "R7": "新店坪"}
+    TOWN_EN = {k: k for k in TOWN_EN}
+    MARKET_EN = {k: k for k in MARKET_EN}
+    NEIGH_EN = {"芷江县": "芷江县", "玉屏侗族自治县": "玉屏县", "万山区": "万山区", "天柱县": "天柱县", "岑巩县": "岑巩县",
+                "三穗县": "三穗县", "镇远县": "镇远县", "麻阳苗族自治县": "麻阳县"}
+    ZH.update({
+        "Yushi industrial park": "鱼市工业园", "County boundary": "县界", "Township boundary": "乡镇界",
+        "Expressway (G60)": "高速公路（G60）", "Railway": "铁路", "River": "河流", "Bus station": "汽车站",
+        "High-speed rail station": "高铁站", "Industrial park": "工业园区", "Recorded bus route": "已记录线路",
+        "County bus station": "县汽车站", "Bus route": "公交线路", "Selected village (30)": "正式村（30）",
+        "Reserve village (6)": "备用村（6）", "Urban / industrial (excluded)": "城区 / 工业园（不入框）",
+        "Market cycle": "农历集期", "Scheduled one-way runs per segment": "路段计划单程班次",
+        " runs/day": " 班/日", "Distance from county bus station (km)": "距县汽车站的线路里程（km）",
+        "Elevation (m)": "海拔（m）", "Statutory holiday blocks": "法定假期块", "Spring Festival travel (chunyun)": "春运窗口",
+        "School term: compulsory": "义务教育学期", "School term: senior high": "普通高中学期",
+        "Sunday: students back to town": "周日：学生返校", "Fri/Sat: students home": "周五/六：学生回家",
+        "Gaokao (college entrance exam)": "高考", "Algorithm / regulation (reliable)": "算法或法规确定（可靠）",
+        "Official notice verified": "官方通知已核实", "Presumed — to verify with county education bureau": "推定，须向县教育局核实",
+        "Not yet published (2027)": "尚未公布（2027）",
+        "a  Modelled population density (WorldPop 2020)": "a  模型人口密度（WorldPop 2020）",
+        "b  Network distance to a recorded route": "b  到已记录线路的路网距离", "persons per km² (log scale)": "人/平方公里（对数刻度）",
+        "Hunan": "湖南省", "Guizhou": "贵州省", "Xinhuang": "新晃",
+        "County bus station\n(Huangzhou)": "县汽车站\n（晃州）", "Xinhuang West\n(high-speed rail)": "新晃西站\n（高铁）",
+        "Dalong EDZ\n(Guizhou)": "大龙经开区\n（贵州）",
+        "Sources: OpenStreetMap contributors (ODbL); Copernicus GLO-30 DEM; 2024 Hunan village boundaries (townships dissolved). Routes routed on the OSM road graph.":
+            "资料来源：OpenStreetMap 贡献者（ODbL）；Copernicus GLO-30 DEM；2024 年湖南省行政村边界（乡镇界由行政村融合）。线路在 OSM 路网上求路。",
+    })
+    STRAT_ZH = {"近线≤1km": "近线（≤1 公里）", "中距1–3km": "中距（1–3 公里）", "远线>3km": "远线（>3 公里）"}
 HALO = [pe.withStroke(linewidth=2.2, foreground="white")]
 HALO_S = [pe.withStroke(linewidth=1.6, foreground="white")]
 
@@ -220,32 +258,32 @@ def fig_study_area():
     # facilities
     sx, sy = station_xy
     ax.plot(sx, sy, "s", ms=7, mfc=INK, mec="white", mew=0.8, zorder=14)
-    ax.text(sx + 1300, sy + 2300, "County bus station\n(Huangzhou)", fontsize=7.6, color=INK, ha="left",
+    ax.text(sx + 1300, sy + 2300, t("County bus station\n(Huangzhou)"), fontsize=7.6, color=INK, ha="left",
             va="bottom", zorder=14, path_effects=HALO, linespacing=0.95)
     hsr = fac[fac.kind == "rail_hsr"].geometry.iloc[0]
     ax.plot(hsr.x, hsr.y, "D", ms=5.5, mfc="white", mec=INK, mew=1.1, zorder=14)
-    ax.text(hsr.x - 1100, hsr.y - 200, "Xinhuang West\n(high-speed rail)", fontsize=7.2, color=INK, ha="right",
+    ax.text(hsr.x - 1100, hsr.y - 200, t("Xinhuang West\n(high-speed rail)"), fontsize=7.2, color=INK, ha="right",
             va="center", zorder=14, path_effects=HALO_S, linespacing=0.95)
     ind = fac[fac.kind == "industrial"]
     for _, f in ind.iterrows():
         ax.plot(f.geometry.x, f.geometry.y, "^", ms=5.5, mfc="#6b7280", mec="white", mew=0.6, zorder=14)
     fy = ind.iloc[0].geometry
-    ax.text(fy.x + 1200, fy.y - 1900, "Yushi industrial park", fontsize=7.0, color=INK2, zorder=14,
+    ax.text(fy.x + 1200, fy.y - 1900, t("Yushi industrial park"), fontsize=7.0, color=INK2, zorder=14,
             path_effects=HALO_S)
     fd = ind.iloc[1].geometry
-    ax.text(fd.x - 1300, fd.y - 2300, "Dalong EDZ\n(Guizhou)", fontsize=7.0, color=INK2, ha="center",
+    ax.text(fd.x - 1300, fd.y - 2300, t("Dalong EDZ\n(Guizhou)"), fontsize=7.0, color=INK2, ha="center",
             zorder=14, path_effects=HALO_S, va="top", linespacing=0.95)
     furniture(ax, loc=(0.035, 0.045), north=(0.955, 0.83))
     graticule(ax)
     # legend
-    h = [Line2D([], [], color="#1f2328", lw=1.3, label="County boundary"),
-         Line2D([], [], color="#7b8794", lw=0.8, ls=(0, (4, 2)), label="Township boundary"),
-         Line2D([], [], color="#7d8791", lw=1.0, label="Expressway (G60)"),
-         Line2D([], [], color="#565e66", lw=0.8, ls=(0, (3, 2)), label="Railway"),
-         Line2D([], [], color="#8fb4d4", lw=1.0, label="River"),
-         Line2D([], [], marker="s", ls="", mfc=INK, mec="white", ms=6, label="Bus station"),
-         Line2D([], [], marker="D", ls="", mfc="white", mec=INK, ms=5, label="High-speed rail station"),
-         Line2D([], [], marker="^", ls="", mfc="#6b7280", mec="white", ms=6, label="Industrial park")]
+    h = [Line2D([], [], color="#1f2328", lw=1.3, label=t("County boundary")),
+         Line2D([], [], color="#7b8794", lw=0.8, ls=(0, (4, 2)), label=t("Township boundary")),
+         Line2D([], [], color="#7d8791", lw=1.0, label=t("Expressway (G60)")),
+         Line2D([], [], color="#565e66", lw=0.8, ls=(0, (3, 2)), label=t("Railway")),
+         Line2D([], [], color="#8fb4d4", lw=1.0, label=t("River")),
+         Line2D([], [], marker="s", ls="", mfc=INK, mec="white", ms=6, label=t("Bus station")),
+         Line2D([], [], marker="D", ls="", mfc="white", mec=INK, ms=5, label=t("High-speed rail station")),
+         Line2D([], [], marker="^", ls="", mfc="#6b7280", mec="white", ms=6, label=t("Industrial park"))]
     lg = ax.legend(handles=h, loc="lower right", fontsize=7, frameon=True, framealpha=0.92,
                    edgecolor="#d1d5db", borderpad=0.6, handlelength=1.8, labelspacing=0.35)
     lg.set_zorder(30)
@@ -256,7 +294,7 @@ def fig_study_area():
     county.plot(ax=ia, color="#c2410c", lw=0)
     for _, p in prov.iterrows():
         c = p.geometry.representative_point()
-        nm = "Hunan" if "湖南" in p["name"] else "Guizhou"
+        nm = t("Hunan") if "湖南" in p["name"] else t("Guizhou")
         ia.text(c.x, c.y, nm, fontsize=7, color=INK2, ha="center", va="center")
     b = prov.total_bounds
     ia.set_xlim(b[0], b[2]); ia.set_ylim(b[1], b[3]); ia.set_aspect("equal")
@@ -265,16 +303,18 @@ def fig_study_area():
         s.set_color("#9aa3ad"); s.set_linewidth(0.6)
     ia.set_facecolor("white")
     cc = county_geom.centroid
-    ia.annotate("Xinhuang", xy=(cc.x, cc.y), xytext=(cc.x + 60000, cc.y - 170000), fontsize=7, color="#c2410c",
+    ia.annotate(t("Xinhuang"), xy=(cc.x, cc.y), xytext=(cc.x + 60000, cc.y - 170000), fontsize=7, color="#c2410c",
                 fontweight="bold", arrowprops=dict(arrowstyle="-", color="#c2410c", lw=0.6))
-    fig.text(0.075, 0.012, "Sources: OpenStreetMap contributors (ODbL); Copernicus GLO-30 DEM; 2024 Hunan village "
-             "boundaries (townships dissolved). Routes routed on the OSM road graph.", fontsize=6.3, color=MUTED)
+    fig.text(0.075, 0.012, t("Sources: OpenStreetMap contributors (ODbL); Copernicus GLO-30 DEM; 2024 Hunan village "
+             "boundaries (townships dissolved). Routes routed on the OSM road graph."), fontsize=6.3, color=MUTED)
     fig.savefig(os.path.join(OUT, "map_study_area.png"), facecolor="white")
     plt.close(fig)
 
 
 # ------------------------------------------------------------------ 2. population + access strata
 STRAT_EN = {"近线≤1km": "Near (≤1 km)", "中距1–3km": "Middle (1–3 km)", "远线>3km": "Far (>3 km)"}
+if LANG == "zh":
+    STRAT_EN = STRAT_ZH
 STRAT_COL = {"近线≤1km": "#1c5cab", "中距1–3km": "#6da7ec", "远线>3km": "#dbe7f6"}
 
 
@@ -293,12 +333,12 @@ def fig_access():
     ax.plot(*station_xy, "*", ms=11, mfc="#c2410c", mec="white", mew=0.7, zorder=10)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    ax.set_title("a  Modelled population density (WorldPop 2020)", fontsize=10, loc="left", color=INK, pad=4)
+    ax.set_title(t("a  Modelled population density (WorldPop 2020)"), fontsize=10, loc="left", color=INK, pad=4)
     cax = fig.add_axes([0.1, 0.12, 0.3, 0.03])
     cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, orientation="horizontal")
     cb.set_ticks([30, 100, 300, 1000, 3000]); cb.set_ticklabels(["30", "100", "300", "1,000", "3,000"])
     cb.ax.tick_params(labelsize=7.5, length=2); cb.outline.set_linewidth(0.4)
-    cb.set_label("persons per km² (log scale)", fontsize=8, color=INK2)
+    cb.set_label(t("persons per km² (log scale)"), fontsize=8, color=INK2)
     # b strata
     ax = axs[1]
     base(ax, hill=False, roads_on=False, towns_on=False, fade=False, water_on=False)
@@ -311,11 +351,11 @@ def fig_access():
     cnt = v.stratum_access.value_counts(); popk = v.groupby("stratum_access").pop_wp2020.sum()
     for sp in ax.spines.values():
         sp.set_visible(False)
-    ax.set_title("b  Network distance to a recorded route", fontsize=10, loc="left", color=INK, pad=4)
+    ax.set_title(t("b  Network distance to a recorded route"), fontsize=10, loc="left", color=INK, pad=4)
     h = [Patch(fc=STRAT_COL[k], ec="#9aa3ad", lw=0.4,
-               label=f"{STRAT_EN[k]}: {cnt[k]} villages, {popk[k]/1000:.0f}k people") for k in STRAT_COL]
-    h += [Line2D([], [], color=INK, lw=1.2, label="Recorded bus route"),
-          Line2D([], [], marker="*", ls="", mfc="#c2410c", mec="white", ms=10, label="County bus station")]
+               label=(f"{STRAT_EN[k]}：{cnt[k]} 个村，{popk[k]/10000:.1f} 万人" if LANG == "zh" else f"{STRAT_EN[k]}: {cnt[k]} villages, {popk[k]/1000:.0f}k people")) for k in STRAT_COL]
+    h += [Line2D([], [], color=INK, lw=1.2, label=t("Recorded bus route")),
+          Line2D([], [], marker="*", ls="", mfc="#c2410c", mec="white", ms=10, label=t("County bus station"))]
     fig.legend(handles=h, loc="lower left", bbox_to_anchor=(0.515, 0.0), fontsize=7.6, frameon=False, ncol=1,
                handlelength=1.5, labelspacing=0.3)
     fig.savefig(os.path.join(OUT, "map_access.png"), facecolor="white")
@@ -353,10 +393,10 @@ def fig_sampling(sel_path):
     ax.scatter(res.rx, res.ry, s=24, facecolors="white", edgecolors=INK, linewidths=0.9, zorder=9)
     furniture(ax, km=10, loc=(0.04, 0.05), north=(0.94, 0.84), fs=7)
     h = [Patch(fc=light[k], ec="#9aa3ad", lw=0.4, label=STRAT_EN[k]) for k in light]
-    h += [Patch(fc="#e5e7eb", ec="#6b7280", hatch="////", lw=0.4, label="Urban / industrial (excluded)"),
-          Line2D([], [], color="#c2410c", lw=1.2, label="Bus route"),
-          Line2D([], [], marker="o", ls="", mfc=INK, mec="white", ms=6, label="Selected village (30)"),
-          Line2D([], [], marker="o", ls="", mfc="white", mec=INK, ms=6, label="Reserve village (6)")]
+    h += [Patch(fc="#e5e7eb", ec="#6b7280", hatch="////", lw=0.4, label=t("Urban / industrial (excluded)")),
+          Line2D([], [], color="#c2410c", lw=1.2, label=t("Bus route")),
+          Line2D([], [], marker="o", ls="", mfc=INK, mec="white", ms=6, label=t("Selected village (30)")),
+          Line2D([], [], marker="o", ls="", mfc="white", mec=INK, ms=6, label=t("Reserve village (6)"))]
     fig.legend(handles=h, loc="lower center", ncol=3, fontsize=7.0, frameon=False, handlelength=1.4,
                columnspacing=1.0, labelspacing=0.3, bbox_to_anchor=(0.5, 0.0))
     fig.savefig(os.path.join(OUT, "map_sampling.png"), facecolor="white")
@@ -382,10 +422,10 @@ def fig_markets():
         ax.text(m.geometry.x + dx, m.geometry.y + dy, MARKET_EN[m.market], fontsize=7.4, ha="center",
                 va="center", color=INK, zorder=11, path_effects=HALO)
     h = [Line2D([], [], marker="o", ls="", mfc=c, mec="white", ms=8,
-                label=f"Lunar days ending {k.replace('/', ' or ')}") for k, c in CYC_COL.items()]
-    h += [Line2D([], [], color="#4b5563", lw=1.2, label="Bus route")]
+                label=(f"逢{'、'.join('一二三四五六七八九十'[int(x) - 1] if x != '0' else '十' for x in k.split('/'))}" if LANG == "zh" else f"Lunar days ending {k.replace('/', ' or ')}")) for k, c in CYC_COL.items()]
+    h += [Line2D([], [], color="#4b5563", lw=1.2, label=t("Bus route"))]
     ax.legend(handles=h, loc="lower right", fontsize=7.2, frameon=True, framealpha=0.92, edgecolor="#d1d5db",
-              title="Market cycle", title_fontsize=7.6, labelspacing=0.35)
+              title=t("Market cycle"), title_fontsize=7.6, labelspacing=0.35)
     furniture(ax, km=10, loc=(0.04, 0.05), north=(0.94, 0.84), fs=7)
     fig.savefig(os.path.join(OUT, "map_markets.png"), facecolor="white")
     plt.close(fig)
@@ -438,10 +478,10 @@ def fig_supply():
                 ax.plot(*zip(*seg), color=col, lw=lw, solid_capstyle="round", zorder=7 + lo / 100)
     ax.plot(*station_xy, "s", ms=6.5, mfc=INK, mec="white", mew=0.8, zorder=14)
     town_labels(ax, fs=6.8)
-    h = [Line2D([], [], color=c, lw=lw, label=(f"{lo}–{hi}" if hi < 60 else f"{lo}+") + " runs/day")
+    h = [Line2D([], [], color=c, lw=lw, label=(f"{lo}–{hi}" if hi < 60 else f"{lo}+") + t(" runs/day"))
          for lo, hi, c, lw in classes]
     ax.legend(handles=h, loc="lower right", fontsize=7.2, frameon=True, framealpha=0.92, edgecolor="#d1d5db",
-              title="Scheduled one-way runs per segment", title_fontsize=7.4, labelspacing=0.35)
+              title=t("Scheduled one-way runs per segment"), title_fontsize=7.4, labelspacing=0.35)
     furniture(ax, km=10, loc=(0.04, 0.05), north=(0.94, 0.84), fs=7)
     fig.savefig(os.path.join(OUT, "map_supply.png"), facecolor="white")
     plt.close(fig)
@@ -478,8 +518,8 @@ def fig_profiles():
         ax.grid(axis="y", color="#e5e7eb", lw=0.5); ax.set_axisbelow(True)
         ax.text(0.995, 0.93, f"{r} {ROUTE_EN[r]} · {stats[r]['km']} km",
                 transform=ax.transAxes, ha="right", va="top", fontsize=7.2, color=INK)
-    axs[-1].set_xlabel("Distance from county bus station (km)", fontsize=8)
-    axs[3].set_ylabel("Elevation (m)", fontsize=8)
+    axs[-1].set_xlabel(t("Distance from county bus station (km)"), fontsize=8)
+    axs[3].set_ylabel(t("Elevation (m)"), fontsize=8)
     axs[-1].set_xlim(0, 63)
     fig.savefig(os.path.join(OUT, "fig_profiles.png"), facecolor="white")
     plt.close(fig)
@@ -490,16 +530,16 @@ def fig_profiles():
 def fig_calendar():
     c = pd.read_csv(os.path.join(DATA, "calendar_daily_v5.csv"), parse_dates=["date"])
     COL = {"A": "#3b6e9a", "V": "#1c7c4a", "P": "#e8a33d", "U": "#c4c9cf"}
-    rows = [("Statutory holiday blocks", lambda d: d.holiday.notna(), lambda d: np.where(d.src_holiday == "U", "U", "A")),
-            ("Spring Festival travel (chunyun)", lambda d: d.chunyun, lambda d: np.full(len(d), "A")),
-            ("School term: compulsory", lambda d: d.term_compulsory.fillna(True) & ~d.term_compulsory.isna() | d.term_compulsory.isna(),
+    rows = [(t("Statutory holiday blocks"), lambda d: d.holiday.notna(), lambda d: np.where(d.src_holiday == "U", "U", "A")),
+            (t("Spring Festival travel (chunyun)"), lambda d: d.chunyun, lambda d: np.full(len(d), "A")),
+            (t("School term: compulsory"), lambda d: d.term_compulsory.fillna(True) & ~d.term_compulsory.isna() | d.term_compulsory.isna(),
              lambda d: np.where(d.term_compulsory.isna(), "U", d.src_term)),
-            ("School term: senior high", lambda d: d.term_highschool.fillna(True) & ~d.term_highschool.isna() | d.term_highschool.isna(),
+            (t("School term: senior high"), lambda d: d.term_highschool.fillna(True) & ~d.term_highschool.isna() | d.term_highschool.isna(),
              lambda d: np.where(d.term_highschool.isna(), "U", d.src_term)),
-            ("Sunday: students back to town", lambda d: d.weekly_outbound_day & (d.term_compulsory == True),
+            (t("Sunday: students back to town"), lambda d: d.weekly_outbound_day & (d.term_compulsory == True),
              lambda d: d.src_term),
-            ("Fri/Sat: students home", lambda d: d.last_school_day_of_week == True, lambda d: d.src_term),
-            ("Gaokao (college entrance exam)", lambda d: d.gaokao, lambda d: np.full(len(d), "A"))]
+            (t("Fri/Sat: students home"), lambda d: d.last_school_day_of_week == True, lambda d: d.src_term),
+            (t("Gaokao (college entrance exam)"), lambda d: d.gaokao, lambda d: np.full(len(d), "A"))]
     fig, ax = plt.subplots(figsize=(11.6, 3.45))
     fig.subplots_adjust(left=0.2, right=0.99, top=0.97, bottom=0.2)
     dnum = mpl.dates.date2num(c.date)
@@ -518,14 +558,14 @@ def fig_calendar():
     ax.set_xlim(dnum.min(), dnum.max() + 1)
     ax.set_yticks([])
     ax.xaxis.set_major_locator(mpl.dates.MonthLocator(bymonth=[1, 4, 7, 10]))
-    ax.xaxis.set_major_formatter(mpl.dates.DateFormatter("%b %Y"))
+    ax.xaxis.set_major_formatter(mpl.dates.DateFormatter("%Y.%m" if LANG == "zh" else "%b %Y"))
     ax.tick_params(axis="x", labelsize=8.5, length=2)
     for sp in ["top", "right", "left"]:
         ax.spines[sp].set_visible(False)
-    h = [Patch(fc=COL["A"], label="Algorithm / regulation (reliable)"),
-         Patch(fc=COL["V"], label="Official notice verified"),
-         Patch(fc=COL["P"], label="Presumed — to verify with county education bureau"),
-         Patch(fc="white", ec="#9aa3ad", hatch="////", label="Not yet published (2027)")]
+    h = [Patch(fc=COL["A"], label=t("Algorithm / regulation (reliable)")),
+         Patch(fc=COL["V"], label=t("Official notice verified")),
+         Patch(fc=COL["P"], label=t("Presumed — to verify with county education bureau")),
+         Patch(fc="white", ec="#9aa3ad", hatch="////", label=t("Not yet published (2027)"))]
     fig.legend(handles=h, loc="lower center", ncol=4, fontsize=8.5, frameon=False, bbox_to_anchor=(0.595, 0.0),
                handlelength=1.4, columnspacing=1.6)
     fig.savefig(os.path.join(OUT, "fig_calendar.png"), facecolor="white")
@@ -571,6 +611,6 @@ if __name__ == "__main__":
     fig_profiles(); print("profiles")
     fig_calendar(); print("calendar")
     fig_title_map(); print("title map")
-    with open(os.path.join(OUT, "fig_numbers.json"), "w") as f:
+    with open(os.path.join(HERE, "fig_numbers.json" if LANG != "zh" else "fig_numbers_zh.json"), "w") as f:
         json.dump(NUM, f, ensure_ascii=False, indent=1)
     print(json.dumps(NUM, ensure_ascii=False)[:1500])

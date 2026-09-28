@@ -86,3 +86,15 @@ markitdown deck/Xinhuang_Rural_Transit_Conference.pptx | grep -iE "lorem|TODO|\[
 ```
 Checklist per round: SYNTHETIC badges present; no CJK in slide text; every slide has speaker notes; numbers
 match the package; slide count in `TOTAL_MAIN` equals the numbered main slides.
+
+## Chinese version (same layout)
+- `LANG_DECK=zh` makes `build_deck.js` pass every string given to `addText/addTable/addChart/addNotes` through
+  `deck/i18n/zh.json`; geometry and styling come from the same code, so the two decks are identical apart from text.
+  The build stops and writes `deck/i18n/missing.json` if any string with ≥3 lowercase letters lacks a translation.
+- After adding or editing English text: `LANG_DECK=collect node deck/build_deck.js`, translate the new strings in
+  `zh.json`, rebuild. Author names, journal names and English reference entries stay as published; Chinese papers
+  use their original Chinese GB/T entries.
+- East Asian font slot is set to Microsoft YaHei (body) / SimSun (headings); Latin stays Calibri / Cambria.
+- `LANG_DECK=zh python3 deck/figures/make_figures.py` writes Chinese-labelled figures with the same pixel size to
+  `deck/figures_zh/` (needs `fonts-noto-cjk`; delete `~/.cache/matplotlib` after installing fonts, or glyphs show as boxes).
+- Check equality: normalise `<a:t>`, `<c:v>`, `<a:ea>` and `descr` in every XML part — nothing else may differ.
