@@ -1,0 +1,1302 @@
+{
+ "title": "多重出行节律下武陵山区县域城乡公交的供需匹配与半柔性配置优化研究——以新晃侗族自治县为例",
+ "total_slides": 20,
+ "synthetic_footer": "模拟数据检验结果（SYNTHETIC），仅用于检验研究路径，不代表新晃实际情况",
+ "slides": [
+  {
+   "no": 1,
+   "section": "封面",
+   "title": "多重出行节律下武陵山区县域城乡公交的供需匹配与半柔性配置优化研究——以新晃侗族自治县为例",
+   "layout": "封面版式。主标题分两行（破折号前后各一行），下方副标题“研究进展汇报”，再下方汇报人、导师、学院与日期占位；底部一行小字为 SYNTHETIC 说明。",
+   "figures": [],
+   "bullets": [
+    "研究进展汇报",
+    "汇报人：［姓名］　　导师：［姓名］",
+    "［学院／专业］　　2026 年［月］",
+    "说明：汇报中的定量结果均来自已知真值的模拟系统（SYNTHETIC），用于检验研究路径，不代表新晃的实际结论。"
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "各位老师好。我汇报的题目是多重出行节律下县域城乡公交的供需匹配与半柔性配置优化，以新晃为例。今天主要汇报两件事：一是研究的整体架构和设计思路，二是目前的进度。需要先说明，真实的逐班次数据还没有到位，所以后面的定量结果都来自一个已知真值的模拟系统，它的作用是检验这条研究路径能不能走通。",
+   "layout_id": "cover",
+   "figure_options": []
+  },
+  {
+   "no": 2,
+   "section": "提纲",
+   "title": "汇报提纲",
+   "layout": "目录页。六个编号条目纵向排列，左侧用色块标出序号，每条右侧用小字注明对应页码范围。",
+   "figures": [],
+   "bullets": [
+    "一、研究背景与问题提出",
+    "二、文献脉络与研究缺口",
+    "三、研究问题、假设与技术路线",
+    "四、研究区、数据与模拟检验设计",
+    "五、四个计算模型及其检验结果",
+    "六、创新点、政策对接与研究进度"
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "汇报分六个部分。前三部分讲为什么做、文献里缺什么、我要回答哪几个问题；第四部分讲数据和模拟检验的设计；第五部分是核心，四个计算模型各用一页讲方法、一页讲结果；最后讲创新点、成果规划和进度。",
+   "layout_id": "toc",
+   "figure_options": []
+  },
+  {
+   "no": 3,
+   "section": "一、研究背景与问题提出",
+   "title": "县域城乡公交的政策重心正在从“通不通车”转向“什么时候有车”",
+   "layout": "左右两栏。左栏三个纵向色块，依次为“政策要求”“山区现实”“理论视角”，每块两行要点；右栏为“研究对象”卡片（新晃侗族自治县、武陵山区、县汽车站发出 7 条城乡公交线路）。",
+   "figures": [],
+   "bullets": [
+    "政策要求：2011 年起推进城乡道路客运一体化，目标从“有车坐”走向“坐得上、坐得好”[1]；2024 年农村道路客运运营服务指南要求按客流规律灵活安排班次，鼓励预约响应[2]。",
+    "“十五五”规划：2026 年印发的《综合交通枢纽发展“十五五”规划》要求“加强枢纽主导方式与集疏运方式运行时刻对接、运力组织协同”，“加强客流高峰期预警”，到 2030 年“适老化水平显著提升”[3]。",
+    "山区现实：交通劣势与相对贫困存在可测的关联[4]，医疗等公共服务的可达性明显受交通条件限制[5]。",
+    "理论视角：缺少公交会使农村居民难以到达就业、医疗和教育机会，属于社会排斥问题[6,7]；城乡交通融合已成为地理学的研究议题[8]。",
+    "研究对象：湖南省新晃侗族自治县（武陵山区），县汽车站发出的 7 条城乡公交线路。"
+   ],
+   "synthetic": false,
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "numbers": {},
+   "speaker_notes": "背景从三个层面说。政策上，城乡客运一体化已经推进了十多年，2024 年的服务指南明确要求按客流规律安排班次。山区县的现实是，交通劣势和相对贫困、看病难是连在一起的。理论上，这是交通与社会排斥的问题。所以问题的重心已经从“有没有车”转到“什么时候有车、有几班车”。2026 年 9 月印发的《综合交通枢纽发展“十五五”规划》又把运行时刻对接、客流高峰预警和适老化写进了国家规划，这些都落在“什么时候有车”上。",
+   "layout_id": "two_col",
+   "figure_options": []
+  },
+  {
+   "no": 4,
+   "section": "一、研究背景与问题提出",
+   "title": "县级运营者面临三个难题：班次依据什么、台账能否代表需求、固定班与机动车如何分工",
+   "layout": "上方一条横幅写“时间维度的可达性”理论依据（两行）；下方三张并列卡片，分别为难题一、二、三，每张卡片顶部用一个短词标题（“权重”“删失”“分工”）。",
+   "figures": [],
+   "bullets": [
+    "理论依据：人的活动受能力、组合和权威三类约束，必须在特定时间到达特定地点[9]；时空可达性是交通地理的前沿议题[10,11]；公交可达性在一天之内随时刻表剧烈波动[12]。",
+    "农村乘客以老人、学生和无车者为主[13]，班次时刻直接决定他们能否出行。",
+    "难题一（权重）：影响因子的权重多用熵权法、灰色关联给出，难以回答“客流变化由什么造成”。",
+    "难题二（删失）：满载班次的台账只记录“坐上车的人”，真实需求被座位数截住，形成删失。",
+    "难题三（分工）：固定时刻表优化与机动加班分开讨论，缺少以预测为纽带的分工。"
+   ],
+   "synthetic": false,
+   "refs": [
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "numbers": {},
+   "speaker_notes": "为什么说“什么时候有车”是一个学术问题？时间地理学告诉我们，人必须在特定的时间到达特定的地点，公交可达性在一天之内是剧烈波动的。农村乘客多是老人和学生，没有别的选择。落到县级运营者身上，就是三个难题：靠什么定班次，台账能不能代表需求，固定班和机动车怎么配合。后面四个研究问题就是从这三个难题和文献缺口里来的。",
+   "layout_id": "banner_cards3",
+   "figure_options": []
+  },
+  {
+   "no": 5,
+   "section": "二、文献脉络与研究缺口",
+   "title": "文献沿一条连贯的逻辑链展开，并留下四个相互关联的缺口",
+   "layout": "上半部分为一条横向五段箭头链：“需求的时间结构 → 权重识别 → 删失还原 → 概率预测 → 两层供给与预测衔接”，每段下方一行要点和文献编号；下半部分为四个缺口框，用箭头分别指向 RQ1—RQ4（下一页）。不要按“一条学派一条学派”分栏排列。",
+   "figures": [],
+   "bullets": [
+    "需求的时间结构：个人出行在日与日之间既有习惯也有变异[14]；定期集市是中国农村社会经济结构的基本单元[15]，但集市对公交客流的影响需要用数据检验。",
+    "权重识别：交通影响因素分析常用熵权法、灰色关联等客观赋权方法，灰色关联模型至今仍在发展[16]；这类方法按指标的离散程度或序列相似程度赋权，不衡量对客流变化的解释力。",
+    "删失还原：收益管理早已指出，售罄后的销售量会低估真实需求，需要“需求还原”[17]。",
+    "概率预测：国内客流预测研究多针对城市地铁和公交的短时客流[18,19]，县域班次级的小计数预测较少。",
+    "两层供给：半柔性公交保留固定骨架、增加有限柔性[20]；国内农村需求响应公交调度刚开始受到关注[21]；“先预测、再优化”的两步法忽略了预测误差对决策的影响[22]。",
+    "四个缺口：①多重节律的相对权重缺少同时估计；②删失需求在城乡公交中没有被处理；③县域班次级概率预测缺位；④固定层与柔性层缺少以预测为纽带的协同设计。"
+   ],
+   "synthetic": false,
+   "refs": [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
+   ],
+   "numbers": {},
+   "speaker_notes": "文献我没有按学派一条一条讲，而是按问题的逻辑连起来：先要知道需求的时间结构，再要识别各节律的权重；权重和预测都要面对删失；预测要变成概率预测才能用于排班；最后是固定层和柔性层怎么用预测衔接。沿着这条链，有四个缺口，它们是环环相扣的：没有可信的权重，固定时刻表不知道按什么编；没有删失还原，节点日一定低估；没有概率预测，柔性层只能靠经验；没有两层协同，优化和临时调度会互相抵消。",
+   "layout_id": "chain_gaps",
+   "figure_options": []
+  },
+  {
+   "no": 6,
+   "section": "三、研究问题、假设与技术路线",
+   "title": "四个研究问题：先弄清“客流由什么决定、明天有多少人”，再决定“固定班怎么排、机动车怎么派”",
+   "layout": "左侧 2×2 矩阵放 RQ1—RQ4（上行“需求”，下行“供给”）；右侧窄栏列 H1—H6，并用细线连到对应 RQ；底部横条两段：论文一（RQ1—RQ2）、论文二（RQ3—RQ4），横条上方注明“合起来构成学位论文”。",
+   "figures": [],
+   "bullets": [
+    "RQ1 客流由什么决定？几点钟、星期几、上学还是放假、节假日、春运、赶集日、天气、季节——这八类因素各占多大分量？赶集日真的最重要吗？",
+    "RQ2 明天每班有多少人？车坐满时，台账只记到座位数，看不到没上车的人（称为“删失”）。怎样还原真实需求，并预测明天每班大约多少人、有多大可能坐满？",
+    "RQ3 固定班车怎么排？固定时刻表只按“天天都有”的规律编排：每条线每天发几班、几点发，才能既少跑空车、又让乘客少等？",
+    "RQ4 机动车怎么派？4 辆机动车前一天晚上按预测派到最可能拥挤的线路和半天，能省下多少社会成本？主要在哪些日子起作用？",
+    "预期（假设，可被数据否定）：H1“几点钟”影响最大，“哪几天特别多”主要由春运和节假日决定，赶集日和天气影响较小；H2 常用的熵权法、灰色关联给出的排序与真实情况明显不一致；H3 把“坐满”考虑进去的模型对满员班次低估更少；H4 按春运、节假日、平日分别给出的人数范围比“一刀切”的范围更可靠；H5 只按日常规律编排的固定时刻表班次更少、总成本更低；H6 机动车的好处集中在春运和节假日前后，平常日子几乎没有。",
+    "论文一（RQ1—RQ2）：删失感知的多重节律识别与概率预测；论文二（RQ3—RQ4）：预测驱动的县域城乡公交半柔性配置。"
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "四个问题用大白话说就是：客流由什么决定，明天每班有多少人，固定班车怎么排，机动车怎么派。前两个回答“需求是什么”，后两个回答“供给怎么配”。右边六条是事先写下的预期，每一条都可以被数据否定。前两个问题写成第一篇期刊论文，后两个写成第二篇，合起来是学位论文。",
+   "layout_id": "rq_matrix",
+   "figure_options": []
+  },
+  {
+   "no": 7,
+   "section": "三、研究问题、假设与技术路线",
+   "title": "技术路线：找规律 → 做预测 → 排固定班 → 派机动车，四步首尾相接",
+   "layout": "上方约 70% 面积放技术路线图（fig/图_技术路线.png，保持原比例）；下方一行三个小标签：“预注册”“时间顺序切分”“偏离预注册逐处标注”。",
+   "figures": [
+    "fig/图_技术路线.png"
+   ],
+   "bullets": [
+    "① 准备数据：每趟车坐了多少人；日历、校历、天气预报；时刻表和座位数；问卷。",
+    "② 找规律（RQ1）：把坐满的班次还原成真实需求，再算出八类因素各占多大分量。得到：排班该看哪些规律。",
+    "③ 做预测（RQ2）：预测明天每班多少人，并分春运、节假日、平日给出可能的人数范围。得到：每班人数和坐满的可能性。",
+    "④ 排固定班（RQ3）：只按“天天都有”的规律，算出每条线每天发几班、几点发。得到：新的固定时刻表。",
+    "⑤ 派机动车（RQ4）：前一天晚上按预测，把 4 辆机动车派到最挤的线路和半天。得到：次日派车单。",
+    "⑥ 统一评价：在同一套模拟中比较社会成本、服务率、等待时间和满载率。",
+    "预注册：计算前先写下用什么方法、怎么评价，避免看到结果再改方法[23]；检验期为 2026-01-01 至 2026-09-30，2026-10-01 以后的台账封存，本轮不读取。",
+    "按时间先后切分：用过去的数据训练、用之后的数据检验，不让模型“偷看”未来[24,25]。",
+    "偏离预注册逐处标注：计算中有四处改动（改进预测方法、最少服务规则、柔性层求解方式、增加反应式对照），都标明“偏离预注册”并说明理由。"
+   ],
+   "synthetic": false,
+   "refs": [
+    23,
+    24,
+    25
+   ],
+   "numbers": {},
+   "speaker_notes": "技术路线可以记成四步：找规律、做预测、排固定班、派机动车。上一步的结果就是下一步的输入：第二步还原出的真实需求，既用来算权重，也用来做预测；第三步的预测，直接决定第五步机动车派到哪里。为了避免看到结果再改方法，计算前做了预注册；实际计算中有四处改动，每一处都标明“偏离预注册”。",
+   "layout_id": "fig_left_tags",
+   "figure_options": [
+    {
+     "full": "fig/图_技术路线.png",
+     "pdf": "fig/图_技术路线.pdf",
+     "px": [
+      1546,
+      1769
+     ],
+     "aspect": 0.87,
+     "real_basemap": false,
+     "panels": []
+    }
+   ],
+   "tags": [
+    "预注册",
+    "时间顺序切分",
+    "偏离预注册逐处标注"
+   ],
+   "layout_note": "技术路线改用原生形状绘制的六步流程（通俗表述）；完整技术路线图见 fig/图_技术路线.png 与研究方案文档。"
+  },
+  {
+   "no": 8,
+   "section": "四、研究区、数据与模拟检验设计",
+   "title": "只使用能够可靠获取的变量：台账、时刻表、日历校历与天气为主，问卷为辅",
+   "layout": "左侧 55% 放研究区线网图（fig/图_研究区与城乡公交线网.png，此图为真实 GIS 底图与现行线路，不是模拟）；右侧两个小表：“真实可得的数据”“需要调查的数据”，下方一条灰底提示“观测口径”。",
+   "figures": [
+    "fig/图_研究区与城乡公交线网.png"
+   ],
+   "bullets": [
+    "真实可得：县汽车站逐日台账（2024-06-01 至 2026-07-27，全县客流总量锚点）；7 条线路双向现行时刻表；法定节假日与调休、农历、春运、校历与住校生离返校日；线路沿线逐日天气实况与预报存档（检验期一律用提前 1 天的预报值）；行政村点位与人口栅格。",
+    "需要调查：暑期跟车调查（已完成，原始问卷待录入）；寒假与春运跟车、行政村入户、线上问卷（计划）。所有问卷中，未成年人由家长回答。",
+    "观测口径：每趟班次只有全程总登乘人数，没有分站点上下客和 OD。",
+    "不纳入模型：工业园区倒班、医院门诊排班、外出务工人员个人返乡日期（无法可靠获取，其影响通过节假日、春运和周节律间接体现）。",
+    "集日与天气只作对照因子：县城集期按“逢农历四、九”整理，属待确认信息，需逐乡核实[15]；天气对公交客流的影响因地区和人群而异[26,27]。",
+    "问卷用于补充乘客群体构成与期望出发时刻；农村出行受收入、距离和公交服务水平的共同影响[28]。"
+   ],
+   "synthetic": false,
+   "refs": [
+    15,
+    26,
+    27,
+    28
+   ],
+   "numbers": {},
+   "speaker_notes": "数据上我坚持一个原则：只用能够可靠获取的变量。核心数据是县站台账、现行时刻表、日历校历和天气，这些都能长期稳定地拿到。问卷是辅助，用来补充乘客构成和期望出发时刻。工业园区倒班、医院排班这些拿不到可靠数据的，不进入模型。另外要说明，每趟车只有全程总人数，没有站点上下客和 OD，所以本研究不做站点层面的分析。",
+   "layout_id": "fig_left55",
+   "figure_options": [
+    {
+     "full": "fig/图_研究区与城乡公交线网.png",
+     "pdf": "fig/图_研究区与城乡公交线网.pdf",
+     "px": [
+      1931,
+      1108
+     ],
+     "aspect": 1.74,
+     "real_basemap": true,
+     "panels": []
+    }
+   ]
+  },
+  {
+   "no": 9,
+   "section": "四、研究区、数据与模拟检验设计",
+   "title": "真实逐班次数据到位前，先用“已知答案”的模拟系统检验整条研究路径",
+   "layout": "左侧 60% 放模拟数据核对图（fig/图_模拟数据核对.png）；右侧三行要点，再下方一个“规模”数字条（天数、班次观测、删失占比、问卷份数四个大号数字）。",
+   "figures": [
+    "fig_slide/图_模拟数据核对_a.png"
+   ],
+   "bullets": [
+    "为什么要模拟：真实台账看不到没坐上车的人，也就无法判断方法算得对不对；模拟系统为每个班次保留“真值”（真实需求、乘客构成、未上车人数），可以直接核对。",
+    "① 生成需求：7 类乘客（学生、务工、老人、赶集、就医办事、通勤、返乡探亲），在每条线路、每个方向、每 15 分钟都有出行需求，由真实的日历、校历和天气驱动。",
+    "② 锚定总量：按县汽车站真实逐日台账校准全县客流总量；台账缺失的日期用回归外推（拟合优度 0.54）。",
+    "③ 模拟乘车：按现行时刻表“装车”——等得越久越可能放弃，车满时一部分人顺延到下一班；同时模拟调度员临时加班和停班。",
+    "④ 生成观测：每趟车只记全程登乘人数，坐满的标为“删失”；问卷受访者从同一批乘客中抽取。",
+    "规模：852 天，116127 个班次观测；满载删失班次占 3.0%；调度员临时加班 255 次；模拟问卷共 808 份（暑期跟车 400、寒假春运跟车 200、入户 100、线上 108）。",
+    "计算结果摘要：RQ1 班次之间的差异 83.5% 由“几点钟”解释（真值 85.8%），赶集日 4.5%、天气 3.8%；RQ2 满员班次平均低估由 18.6 人（忽略删失的 LightGBM）降到 9.3 人（主方法）；RQ3 固定层车次减少 22.2%，社会成本降低 13.8%；RQ4 柔性层再降 0.5 个百分点，主要来自节假日边沿（3.4）和春运核心期（2.1）。",
+    "真实数据到位后：跳过模拟步骤，按同一流程重算（附录 A 操作指南）。"
+   ],
+   "synthetic": true,
+   "refs": [],
+   "numbers": {
+    "sim_days": "852",
+    "sim_nobs": "116127",
+    "sim_full": "3.0",
+    "sim_extra": "255",
+    "sv_total": "808",
+    "sim_r2": "0.54",
+    "sv_sum": "400",
+    "sv_win": "200",
+    "sv_hh": "100",
+    "sv_on": "108",
+    "fwt_cnb_tod": "83.5",
+    "fwt_true_tod": "85.8",
+    "fwd_cnb_mkt": "4.5",
+    "fwd_cnb_wx": "3.8",
+    "fc_lgb_cen_under": "18.6",
+    "fc_hyb_cen_under": "9.3",
+    "fxd_opt_trips": "22.2",
+    "fx_opt_all_red": "13.8",
+    "fxg_main_all": "0.5",
+    "fxg_main_he": "3.4",
+    "fxg_main_sf": "2.1"
+   },
+   "speaker_notes": "因为真实的逐班次数据还没到，我先搭了一个知道答案的模拟系统。它分四步：生成七类乘客的出行需求，按县站真实台账校准总量，按现行时刻表模拟乘车和满员，最后只留下台账能看到的数字。左下的图说明模拟总量随真实台账同步起伏。右边是在这个系统里算出的主要结果，后面各页会逐一展开。这些数字只说明方法能不能算对，不是新晃的实际结论。",
+   "layout_id": "fig_left60_numbers",
+   "figure_options": [
+    {
+     "full": "fig/图_模拟数据核对.png",
+     "pdf": "fig/图_模拟数据核对.pdf",
+     "px": [
+      1911,
+      1741
+     ],
+     "aspect": 1.1,
+     "real_basemap": false,
+     "panels": [
+      {
+       "file": "fig_slide/图_模拟数据核对_a.png",
+       "panel": "a",
+       "title": "a  模拟的城乡公交县站载客随真实台账同步起伏，春运与周节律被保留",
+       "px": [
+        1881,
+        709
+       ],
+       "aspect": 2.65
+      },
+      {
+       "file": "fig_slide/图_模拟数据核对_b.png",
+       "panel": "b",
+       "title": "b  满载删失集中在 R3，入户样本覆盖三类可达性",
+       "px": [
+        924,
+        962
+       ],
+       "aspect": 0.96
+      },
+      {
+       "file": "fig_slide/图_模拟数据核对_c.png",
+       "panel": "c",
+       "title": "c  跟车样本群体构成与真值对照",
+       "px": [
+        884,
+        955
+       ],
+       "aspect": 0.93
+      }
+     ]
+    }
+   ],
+   "number_bar": [
+    {
+     "key": "sim_days",
+     "value": "852",
+     "unit": "天",
+     "label": "模拟天数"
+    },
+    {
+     "key": "sim_nobs",
+     "value": "116127",
+     "unit": "个",
+     "label": "班次观测"
+    },
+    {
+     "key": "sim_full",
+     "value": "3.0",
+     "unit": "%",
+     "label": "满载删失班次占比"
+    },
+    {
+     "key": "sv_total",
+     "value": "808",
+     "unit": "份",
+     "label": "四套模拟问卷"
+    }
+   ]
+  },
+  {
+   "no": 10,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "模型一（RQ1）：先把“坐满的班次”还原成真实需求，再算八类因素各占多大分量",
+   "layout": "左侧为模型流程图（四个方框加箭头：逐班次台账 → 删失负二项 → 期望需求 log μ̂ → 因子族 Shapley 分解 → 权重与 95% 区间）；右侧上方为两个公式框（纯文本），右侧下方列对照方法。",
+   "figures": [],
+   "bullets": [
+    "通俗地说：先把被座位数“截住”的需求补回来，再把客流的起伏公平地分给八类因素，看谁占得最多。",
+    "输入：每趟车的登乘人数（坐满的班次只知道“至少 c 人”）；八类因素：几点钟、星期几、校历、节假日、春运、赶集日、天气、季节。",
+    "怎么算：先用适合“人数”的统计模型估计每班的真实需求，坐满的班次按“至少 c 人”处理；再把模型能解释的客流起伏在八类因素之间公平分配。",
+    "得到：八类因素的权重（%）和可信范围；分“同一天不同班次”和“不同日期”两个层面。",
+    "为什么这样做：客流是 0、1、2……这样的整数，而且忽多忽少，负二项模型专门描述这种数据[29]；坐满的班次若当成“正好 c 人”会低估节点日需求，航空收益管理早有“需求还原”的做法[30]。",
+    "“公平分配”用 Shapley 方法：各因素的份额加起来正好等于总数，因素之间相关也不会重复计算[31,32]。",
+    "和常用方法比：熵权法、灰色关联只看数据波动大小或形状是否相似，不衡量“对客流的解释力”；SHAP 在因素相关时分配会失真[33]。",
+    "专业名称：删失负二项回归；因子族 Shapley R² 分解；以连续 7 天为块的自助法给出 95% 区间；对照方法为熵权法、灰色关联、LightGBM-SHAP 和忽略删失的朴素负二项。"
+   ],
+   "synthetic": false,
+   "refs": [
+    29,
+    30,
+    31,
+    32,
+    33
+   ],
+   "numbers": {},
+   "speaker_notes": "模型一做两件事。第一，把坐满的班次还原成真实需求：台账上写 19 人，我们只知道真实需求至少 19 人，模型就按“至少 19 人”来算。第二，把客流的起伏公平地分给八类因素，看谁占得最多。熵权法和灰色关联是常用做法，但它们衡量的是数据波动大小，不是对客流的解释力，所以我把它们作为对照。公式：log μ = 线路×方向基线 + 时段 + 周节律 + 校历 + 节假日 + 春运 + 集日 + 天气 + 季节；满载班次似然贡献为 P(Y* ≥ c)；φk = Σ［|S|!(K−|S|−1)!/K!］·［R²(S∪{k}) − R²(S)］，K = 8。",
+   "layout_id": "flow_formula",
+   "figure_options": []
+  },
+  {
+   "no": 11,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "RQ1 结果：班次层由日内时段主导，日层由春运和节假日主导，集日与天气权重较小",
+   "layout": "左侧 60% 放影响因子权重图（fig/图_影响因子权重.png）；右侧三组要点；右下角一个“假设检验”小框：H1 支持、H2 支持。",
+   "figures": [
+    "fig/图_影响因子权重.png"
+   ],
+   "bullets": [
+    "班次层：时段族权重 83.5%（95% 区间 79.1%—85.9%），模拟真值 85.8%。",
+    "日层：春运 36.7%、节假日 29.1%；集日 4.5%、天气 3.8%。",
+    "方法比较（与真值权重的平均绝对误差，百分点）：删失负二项 0.6，灰色关联 9.0，SHAP 10.2，熵权法 10.7；与真值的秩相关：熵权法仅 0.36，灰色关联 0.29。",
+    "假设：H1、H2 在模拟数据中得到支持。",
+    "含义：固定时刻表首先要排对“一天之内的班次分布”；集日不宜作为排班的核心依据，这一点与以集市为中心的农村研究传统[15]形成对话，需用真实数据复核。"
+   ],
+   "synthetic": true,
+   "refs": [
+    15
+   ],
+   "numbers": {
+    "fwt_cnb_tod": "83.5",
+    "fwt_cnb_tod_lo": "79.1",
+    "fwt_cnb_tod_hi": "85.9",
+    "fwt_true_tod": "85.8",
+    "fwd_cnb_sf": "36.7",
+    "fwd_cnb_hol": "29.1",
+    "fwd_cnb_mkt": "4.5",
+    "fwd_cnb_wx": "3.8",
+    "fe_cnb_mae": "0.6",
+    "fe_grey_mae": "9.0",
+    "fe_shap_mae": "10.2",
+    "fe_ent_mae": "10.7",
+    "fe_ent_rho": "0.36",
+    "fe_grey_rho": "0.29"
+   },
+   "speaker_notes": "结果很清楚。班次层，日内时段解释了八成以上的差异，也就是说上午进城、下午返乡的差异远大于日期之间的差异。日层，春运和节假日合计超过六成，集日和天气都在 5% 以下。方法比较上，删失负二项加 Shapley 的误差不到 1 个百分点，熵权法和灰色关联的排序与真值几乎不相关。这支持了 H1 和 H2。",
+   "layout_id": "fig_left60_hyp",
+   "figure_options": [
+    {
+     "full": "fig/图_影响因子权重.png",
+     "pdf": "fig/图_影响因子权重.pdf",
+     "px": [
+      1844,
+      1906
+     ],
+     "aspect": 0.97,
+     "real_basemap": false,
+     "panels": [
+      {
+       "file": "fig_slide/图_影响因子权重_a.png",
+       "panel": "a",
+       "title": "a  日际差异主要由春运与节假日解释，集日与天气为微弱因子",
+       "px": [
+        1340,
+        778
+       ],
+       "aspect": 1.72
+      },
+      {
+       "file": "fig_slide/图_影响因子权重_a2.png",
+       "panel": "a2",
+       "title": "班次层权重与真值的偏差",
+       "px": [
+        443,
+        669
+       ],
+       "aspect": 0.66
+      },
+      {
+       "file": "fig_slide/图_影响因子权重_b.png",
+       "panel": "b",
+       "title": "b  节庆返乡类（春运＋节假日）",
+       "px": [
+        598,
+        570
+       ],
+       "aspect": 1.05
+      },
+      {
+       "file": "fig_slide/图_影响因子权重_c.png",
+       "panel": "c",
+       "title": "c  日常节律类（周节律＋校历）",
+       "px": [
+        598,
+        570
+       ],
+       "aspect": 1.05
+      },
+      {
+       "file": "fig_slide/图_影响因子权重_d.png",
+       "panel": "d",
+       "title": "d  满载班次的潜在需求恢复",
+       "px": [
+        541,
+        1085
+       ],
+       "aspect": 0.5
+      }
+     ]
+    }
+   ],
+   "hyp_box": "假设检验（模拟数据）：H1 支持、H2 支持"
+  },
+  {
+   "no": 12,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "模型二（RQ2）：统计模型算“规律部分”，机器学习补“剩余部分”，再按情景给出可靠的人数范围",
+   "layout": "上方为三段式横向流程（结构项 → 残差修正 → 预测区间），每段一个方框两行说明；下方左栏“情景划分”（5 个情景色块），右栏“评价指标与对照方法”。",
+   "figures": [],
+   "bullets": [
+    "通俗地说：先算出规律部分，再补上规律没抓住的部分，最后告诉调度员“明天这班大概率在多少人之间”。",
+    "① 规律部分：沿用模型一，按几点钟、星期几、节假日、春运等算出每班的期望人数；坐满的班次按“至少 c 人”处理。",
+    "② 补上剩余：用 LightGBM（一种常用的机器学习方法）学习规律没抓住的部分[34]；坐满班次的真实人数先估计补齐再学习。",
+    "③ 给出范围：给出 90% 人数范围，共形预测在很弱的假设下保证覆盖率[35,36]；春运核心、节假日边沿、学生离返校日、天气事件日、普通日五种情景分别校准（Mondrian）。三步合称“主方法”。",
+    "为什么分情景：春运和节假日的波动远大于平日，统一的范围会在高峰日“罩不住”。",
+    "怎么检验：只用过去预测未来，按月滚动回测；误差看 MAE、RMSE、WAPE 与平均偏差[37]，差异是否显著用 DM 检验[38]，并用计数预测的专门方法评价[39]。",
+    "对照方法：季节朴素（上周同一班次）、历史均值、朴素负二项、删失负二项、LightGBM（泊松，忽略删失）。",
+    "改进方法（偏离预注册）：删失感知 LightGBM，用 EM 算法反复补齐坐满班次的人数，单独报告。"
+   ],
+   "synthetic": false,
+   "refs": [
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+   ],
+   "numbers": {},
+   "speaker_notes": "模型二分三步：先用统计模型算出规律部分，再用机器学习补上规律没抓住的部分，最后给出一个人数范围。范围按春运、节假日、平日等五种情景分别校准，因为春运的波动比平日大得多，用同一个范围在高峰日一定罩不住。检验时只用过去的数据预测未来，和季节朴素、历史均值等常用做法比较。看到结果后我又加了一个改进方法，按偏离预注册单独报告。",
+   "layout_id": "flow3_two_col",
+   "figure_options": []
+  },
+  {
+   "no": 13,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "RQ2 结果：主方法显著优于传统方法，满载班次低估减半，Mondrian 区间在高需求情景接近名义覆盖",
+   "layout": "左侧 60% 放客流预测回测图（fig/图_客流预测回测.png）；右侧四组要点；右下角“假设检验”小框：H3 支持、H4 支持。",
+   "figures": [
+    "fig/图_客流预测回测.png"
+   ],
+   "bullets": [
+    "总体 WAPE：主方法 42.1%，季节朴素 57.9%，删失负二项 51.1%，LightGBM（泊松）40.0%，改进方法 41.1%。",
+    "显著性：主方法在绝对误差上显著优于季节朴素、历史均值和两种负二项模型；与两种 LightGBM 模型的差异在 5% 水平上不显著（与 LightGBM（泊松）比较的 DM 检验 p = 0.067）。",
+    "满载删失班次：忽略删失的 LightGBM 平均低估 18.6 人，主方法 9.3 人（H3 得到支持）。",
+    "90% 区间：春运核心期 Mondrian 覆盖率 92.1%，全局区间 87.6%；Mondrian 区间在各情景的覆盖率为 90.0%—92.2%（H4 得到支持）。",
+    "使用建议：两种方法并行运行，点预测采用改进方法，区间采用主方法。"
+   ],
+   "synthetic": true,
+   "refs": [],
+   "numbers": {
+    "fc_hyb_all_wape": "42.1",
+    "fc_snaive_all_wape": "57.9",
+    "fc_cnb_all_wape": "51.1",
+    "fc_lgb_all_wape": "40.0",
+    "fc_imp_all_wape": "41.1",
+    "dm_m_lgb_abs_p": "0.067",
+    "fc_lgb_cen_under": "18.6",
+    "fc_hyb_cen_under": "9.3",
+    "cv_mon_sf": "92.1",
+    "cv_glo_sf": "87.6",
+    "cv_mon_nd": "90.0",
+    "cv_mon_wx": "92.2"
+   },
+   "speaker_notes": "预测结果有三点。第一，主方法明显好于季节朴素和负二项模型；和 LightGBM 相比，总体误差差不多，差异不显著。第二，关键在满载班次：LightGBM 的总体误差略低，但在满载班次上它平均低估 18.6 人，是主方法的两倍。第三，区间方面，全局区间在春运核心期只覆盖了 87.6%，Mondrian 区间达到 92.1%。所以实际使用时，点预测用改进方法，区间用主方法。",
+   "layout_id": "fig_left60_hyp",
+   "figure_options": [
+    {
+     "full": "fig/图_客流预测回测.png",
+     "pdf": null,
+     "px": [
+      2160,
+      1920
+     ],
+     "aspect": 1.12,
+     "real_basemap": false,
+     "panels": [
+      {
+       "file": "fig_slide/图_客流预测回测_a.png",
+       "panel": "a",
+       "title": "a  分情景预测误差（2026-01—09 滚动回测）",
+       "px": [
+        1046,
+        961
+       ],
+       "aspect": 1.09
+      },
+      {
+       "file": "fig_slide/图_客流预测回测_b.png",
+       "panel": "b",
+       "title": "b  删失班次示例：R3 进城 10:00（春运前后）",
+       "px": [
+        998,
+        792
+       ],
+       "aspect": 1.26
+      },
+      {
+       "file": "fig_slide/图_客流预测回测_c.png",
+       "panel": "c",
+       "title": "c  90% 预测区间分情景覆盖率",
+       "px": [
+        956,
+        792
+       ],
+       "aspect": 1.21
+      },
+      {
+       "file": "fig_slide/图_客流预测回测_d.png",
+       "panel": "d",
+       "title": "d  线路预测误差与满载删失偏差",
+       "px": [
+        925,
+        732
+       ],
+       "aspect": 1.26
+      }
+     ]
+    }
+   ],
+   "hyp_box": "假设检验（模拟数据）：H3 支持、H4 支持"
+  },
+  {
+   "no": 14,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "模型三（RQ3）：固定时刻表只管“天天都有”的规律，用整数规划算出每条线发几班、几点发",
+   "layout": "左栏为“需求分层与时段反演”示意（6 个层的小色块 + 一条 15 分钟时段需求曲线示意）；右栏上方为社会成本公式框，下方为五类约束清单；底部一行列方法来源文献编号。",
+   "figures": [],
+   "bullets": [
+    "通俗地说：一张固定时刻表要同时照顾上学日、周末和假期，所以把六类日子一起放进模型里排，让总成本最低。",
+    "分工：固定时刻表管“天天都有”的规律（一天中的钟点、星期几、上学或放假）；春运、节假日、恶劣天气等“偶尔才有”的高峰交给次日机动车。",
+    "六类日子：学期周一至周四、学期周五、学期周六、学期周日、假期工作日、假期周末，按天数加权；每班真实需求来自模型一，再用问卷里“想几点出发”分到每 15 分钟。",
+    "目标：社会成本最低。社会成本 = 车辆运营花的钱 + 乘客等车的时间（折成钱）+ 没坐上车的损失[40,41]。",
+    "决定什么：每条线路每个方向在 10 分钟网格上“发不发车”。",
+    "要满足的条件：每班不超过座位数；车辆能周转回来；司机工作时长不超限；保留首末班（以现行首末班为界，偏离预注册）；发车数为整数。用开源求解器 HiGHS 求解。",
+    "方法来源：时刻表编制与车辆排班综述[42]；资源约束下的鲁棒时刻表[43]；线网与发车频率综述[44]；多车型发车时刻与车型联合优化[45]；城乡一体化公交线路与频率联合优化[46]。"
+   ],
+   "synthetic": false,
+   "refs": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "numbers": {},
+   "speaker_notes": "模型三的思路是分工：固定时刻表只管天天都有的规律，春运、节假日这类偶尔才有的高峰交给机动车。一张时刻表要同时适用于上学日、周末和假期，所以把六类日子一起放进模型，按天数加权。目标是社会成本最低，也就是把运营花的钱、乘客等车的时间和没坐上车的损失放在一起算。首末班按现行保留，这一条属于偏离预注册。",
+   "layout_id": "two_col_formula",
+   "figure_options": []
+  },
+  {
+   "no": 15,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "模型四（RQ4）：在固定时刻表之上，前一天晚上按预测把 4 辆机动车派到最挤的线路",
+   "layout": "左栏为柔性层组织示意（4 辆车 × 上午/下午两个半日的格子图，前一晚指派到线路）；右栏上方为“对照与变体”八项清单，下方为信息价值公式框。",
+   "figures": [],
+   "bullets": [
+    "通俗地说：不让老人、学生自己预约，而是车站前一晚看预测，把机动车提前排到明天最挤的线路和半天。",
+    "为什么这样做：半柔性公交是“固定骨架 + 有限机动”[20]；机动服务是公共交通的新机会[47]，但很多需求响应项目因成本高、人少而停办[48]，所以机动车只在不规则的高峰日使用。",
+    "怎么派：4 辆 19 座机动车，每天分上午（6:00—12:30）和下午（12:30—18:30）两个半天；一辆车、一个半天地逐个安排，每次选“省钱最多”的线路和时刻，直到不再省钱为止。",
+    "和 8 种方案比较：现行时刻表；现行 + 调度员临时加班；只优化固定班；主方案（按主方法预测派车）；按改进预测派车；随机规划（样本平均近似，偏离预注册）[49]；看到满员再临时加开；完美预知（理论上限）。低需求条件下半柔性交付模式的评估见[50]。",
+    "信息价值：预测兑现了多少理论收益[22]＝（主方案省下的 − 只优化固定班省下的）÷（完美预知省下的 − 只优化固定班省下的）。"
+   ],
+   "synthetic": false,
+   "refs": [
+    20,
+    47,
+    48,
+    49,
+    50,
+    22
+   ],
+   "numbers": {},
+   "speaker_notes": "模型四回答机动车怎么派。县里乘客以老人和学生为主，让他们用手机预约并不现实，所以改为车站前一天晚上根据预测派车。派车的办法很直接：一辆车、一个半天地安排，每次选最省钱的线路和时刻。我和八种方案做了比较，其中完美预知代表预测完全准确时的理论上限，主方案离这个上限还差多少，就是信息价值要回答的问题。",
+   "layout_id": "two_col_formula",
+   "figure_options": []
+  },
+  {
+   "no": 16,
+   "section": "五、四个计算模型及其检验结果",
+   "title": "RQ3—RQ4 结果：固定层减少车次并降低社会成本，柔性层收益集中在春运和节假日边沿",
+   "layout": "左侧 60% 放时刻表与柔性排班图（fig/图_时刻表与柔性排班.png）；右侧两组要点（“固定层”“柔性层”）；右下角“假设检验”小框：H5 支持、H6 支持。甘特图样例（fig/图_次日柔性排班甘特图样例.png）放入备注说明或作为点击放大的小缩略图，不要挤占主图。",
+   "figures": [
+    "fig/图_时刻表与柔性排班.png",
+    "fig/图_次日柔性排班甘特图样例.png"
+   ],
+   "bullets": [
+    "固定层（RQ3）：检验期车次 36803 → 28648 班（减少 22.2%），车公里减少 24.9%，服务率 81.6% → 83.8%，社会成本降低 13.8%（H5 得到支持）。",
+    "代价：人均等待时间增加 2.5 分钟，满载班次率 3.0% → 4.8%。",
+    "柔性层（RQ4）：主方案社会成本降低 14.3%，比只优化固定层多 0.5 个百分点；节假日边沿多 3.4 个百分点，春运核心期多 2.1 个百分点，普通日为 -0.2 个百分点，接近零（H6 得到支持）。",
+    "信息价值：主方案兑现了完美预知收益的 29.0%，改进预测方案为 35.1%；完美预知上界的社会成本降幅为 15.4%。",
+    "运营建议：正式方案中把“服务率不低于现行”作为一条硬约束。"
+   ],
+   "synthetic": true,
+   "refs": [],
+   "numbers": {
+    "fx_cur_all_trips": "36803",
+    "fx_opt_all_trips": "28648",
+    "fxd_opt_trips": "22.2",
+    "fxd_opt_vkm": "24.9",
+    "fx_cur_all_srv": "81.6",
+    "fx_opt_all_srv": "83.8",
+    "fx_opt_all_red": "13.8",
+    "fx_wait_change": "2.5",
+    "fx_cur_all_full": "3.0",
+    "fx_opt_all_full": "4.8",
+    "fx_main_all_red": "14.3",
+    "fxg_main_all": "0.5",
+    "fxg_main_he": "3.4",
+    "fxg_main_sf": "2.1",
+    "fxg_main_nd": "-0.2",
+    "voi_main": "29.0",
+    "voi_imp": "35.1",
+    "fx_orac_all_red": "15.4"
+   },
+   "speaker_notes": "固定层的结果是：车次减少两成多，车公里减少约四分之一，服务率反而略有提高，社会成本下降 13.8%，代价是平均等待多了两分半。柔性层在此基础上再降 0.5 个百分点，看起来不大，但收益集中在节假日边沿和春运核心期，普通日几乎为零，这正好验证了“稳定节律给固定层、不规则节律给柔性层”的分工。现在的预测兑现了理论收益的 29%，说明改进预测还有空间。",
+   "layout_id": "fig_left60_hyp",
+   "figure_options": [
+    {
+     "full": "fig/图_时刻表与柔性排班.png",
+     "pdf": null,
+     "px": [
+      2160,
+      1920
+     ],
+     "aspect": 1.12,
+     "real_basemap": false,
+     "panels": [
+      {
+       "file": "fig_slide/图_时刻表与柔性排班_a.png",
+       "panel": "a",
+       "title": "a  各线路固定发车数调整",
+       "px": [
+        837,
+        765
+       ],
+       "aspect": 1.09
+      },
+      {
+       "file": "fig_slide/图_时刻表与柔性排班_b.png",
+       "panel": "b",
+       "title": "b  R7 县城→乡镇：需求剖面与新旧发车",
+       "px": [
+        927,
+        811
+       ],
+       "aspect": 1.14
+      },
+      {
+       "file": "fig_slide/图_时刻表与柔性排班_c.png",
+       "panel": "c",
+       "title": "c  分情景社会成本降幅",
+       "px": [
+        1031,
+        922
+       ],
+       "aspect": 1.12
+      },
+      {
+       "file": "fig_slide/图_时刻表与柔性排班_d.png",
+       "panel": "d",
+       "title": "d  2026 年 1—9 月每日柔性用车",
+       "px": [
+        943,
+        870
+       ],
+       "aspect": 1.08
+      }
+     ]
+    },
+    {
+     "full": "fig/图_次日柔性排班甘特图样例.png",
+     "pdf": null,
+     "px": [
+      2160,
+      720
+     ],
+     "aspect": 3.0,
+     "real_basemap": false,
+     "panels": []
+    }
+   ],
+   "hyp_box": "假设检验（模拟数据）：H5 支持、H6 支持",
+   "layout_note": "甘特图样例（宽高比 3.0）不进入主图区；可在右侧要点下方放 1.2 英寸高的缩略图并注明“样例”，或只在备注中说明。"
+  },
+  {
+   "no": 17,
+   "section": "六、创新点、政策对接与研究进度",
+   "title": "三项可能的创新，并与“十五五”综合交通枢纽规划的四项要求直接对接",
+   "layout": "上半部分三张并列卡片（研究对象、方法、应用三项创新）；下半部分为成果路线图：学位论文居中，左右两篇期刊论文，各自标注对应的 RQ 和核心贡献。",
+   "figures": [],
+   "bullets": [
+    "创新一（研究对象）：在“多重节律叠加”框架下，于县域尺度同时估计八个因子族的权重，为“集日是否重要”等地方经验提供可检验的定量证据。",
+    "创新二（方法）：引入收益管理的删失需求还原[17]，构建“删失负二项—因子族 Shapley 分解—按情景 Mondrian 共形”链条，并在已知真值的模拟系统中检验其相对熵权法、灰色关联和 SHAP 的优势。",
+    "创新三（应用）：“固定层承担稳定节律、次日柔性层承担不规则节律”的半柔性配置[20]，用信息价值量化预测改进的边际收益，形成县级可操作的排班流程。",
+    "与《综合交通枢纽发展“十五五”规划》的对接[3]：①运行时刻对接与“最晚一班”兜底（第六条）→ RQ3 固定时刻表保留首末班；②客流监测与高峰期预警（第十四条）→ RQ2 次日每班人数与坐满可能性；③平时调度、数据集与算法（第十五条）→ 统一数据口径与可复现代码；④适老化（2030 年目标）→ RQ4 前一晚派车，不需乘客预约。",
+    "定位：规划重在枢纽建设与衔接，没有专门针对县域城乡公交排班的条款；本研究对接的是规划“软硬结合”中的运营服务一侧，位于多层级枢纽体系的县域末端。",
+    "成果：论文一（RQ1—RQ2）、论文二（RQ3—RQ4）分别面向交通需求建模与预测、公共交通运营与规划方向的国际期刊；四个研究问题合成一篇中文学位论文（样稿已形成）。"
+   ],
+   "synthetic": false,
+   "refs": [
+    17,
+    20,
+    3
+   ],
+   "numbers": {},
+   "speaker_notes": "创新点有三项：对象上同时估计八类节律的权重，方法上把删失需求还原引入城乡公交，应用上提出固定层加次日柔性层的分工。下半部分是与“十五五”综合交通枢纽规划的对接。规划主要讲大枢纽的建设和衔接，没有专门写县域公交排班，所以我不夸大对接程度；但规划要求的运行时刻对接、高峰预警、数据与算法、适老化四项，本研究都有对应的模型或产出。两篇期刊论文和学位论文的关系见第 6 页底部。",
+   "layout_id": "cards3_roadmap",
+   "figure_options": []
+  },
+  {
+   "no": 18,
+   "section": "六、创新点、政策对接与研究进度",
+   "title": "研究框架、代码与模拟检验已完成，下一步是接入真实数据并完成三轮调查",
+   "layout": "左侧为进度表（三列：已完成／进行中／待开展，用绿、黄、灰三色区分）；右上为“待确认事项”清单；右下为“研究局限”清单（小字）。底部一条六阶段时间轴，按实际进度着色。",
+   "figures": [],
+   "bullets": [
+    "已完成：文献综述（206 条参考文献，含中文核心期刊）；研究问题、假设与预注册；模拟系统、四个模型的全部代码与回测；四份研究文档（研究方案、文献综述、计算模型研究报告、学位论文样稿）；暑期跟车调查的现场工作。",
+    "进行中：暑期跟车原始问卷录入；与运营单位对接逐班次台账。［请汇报人按实际情况确认］",
+    "待开展：寒假与春运跟车调查；行政村入户调查；线上问卷；用真实数据替换模拟数据并重算全部结果。",
+    "待确认事项：各乡镇集期；天气阈值；线路运行时间与配车、各车型核定座位数（目前为假设值）；是否纳入“十五五”规划相关的补强方向（与铁路客站到发时刻衔接、客货邮融合、能耗测算）。",
+    "研究局限：结果全部来自模拟数据；只有全程总登乘人数，无站点上下客和 OD；训练期只含两个春运；两处偏离预注册的方案未计算预注册版本；集期与天气阈值待核实。",
+    "时间安排（研究方案中的六个阶段）：第 1—2 月 文献综述与数据对接 → 第 3 月 暑期跟车问卷与集期核实 → 第 4—5 月 RQ1、RQ2 与论文一初稿 → 第 6—7 月 寒假（春运）跟车、入户与网络问卷 → 第 8—9 月 RQ3、RQ4 与论文二初稿 → 第 10—12 月 学位论文撰写、修改与答辩。"
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "最后汇报进度。研究框架、全部代码和模拟检验已经完成，四份文档也已形成，暑期跟车的现场工作已经做完。接下来最关键的是两件事：一是拿到逐班次台账，二是完成寒假春运跟车、入户和线上问卷。数据到位后，按附录里的操作步骤替换模拟数据，就能得到新晃的实际结论。几个待确认事项，包括集期、天气阈值、运行时间和座位数，需要在实地调查中逐项核实。我的汇报就到这里，请各位老师批评指正。",
+   "layout_id": "progress",
+   "figure_options": []
+  },
+  {
+   "no": 19,
+   "section": "参考文献",
+   "title": "参考文献（1/2）",
+   "layout": "两栏排版，9—10 磅，悬挂缩进。",
+   "figures": [],
+   "bullets": [
+    "[1] 交通运输部. 关于积极推进城乡道路客运一体化发展的意见: 交运发〔2011〕490号[EB/OL]. (2011-09-13)[2026-09-30]. https://www.gov.cn/zwgk/2011-09/22/content_1953581.htm.",
+    "[2] 交通运输部办公厅. 交通运输部办公厅关于印发《农村道路客运运营服务指南（试行）》的通知: 交办运函〔2024〕1237号[EB/OL]. (2024-06-24)[2026-09-30]. https://www.gov.cn/zhengce/zhengceku/202406/content_6960241.htm.",
+    "[3] 交通运输部, 国家发展改革委, 财政部, 等. 关于印发《综合交通枢纽发展“十五五”规划》的通知: 交规划发〔2026〕118号[Z]. 2026-09-10.",
+    "[4] 宫玉茹, 胡昊宇, 王列, 等. 社会排斥视角下山区农村交通劣势与相对贫困的关系研究——以贵州省黄平县为例[J]. 地理科学进展, 2026, 45(4): 838-852. DOI: 10.18306/dlkxjz.2026.04.012.",
+    "[5] 邓丽, 邵景安, 郭跃, 等. 基于改进的两步移动搜索法的山区医疗服务空间可达性——以重庆市石柱县为例[J]. 地理科学进展, 2015, 34(6): 716-725. DOI: 10.18306/dlkxjz.2015.06.007.",
+    "[6] Farrington J, Farrington C. Rural accessibility, social inclusion and social justice: towards conceptualisation[J]. Journal of Transport Geography, 2005, 13(1): 1-12. DOI: 10.1016/j.jtrangeo.2004.10.002.",
+    "[7] Lucas K. Transport and social exclusion: Where are we now?[J]. Transport Policy, 2012, 20: 105-113. DOI: 10.1016/j.tranpol.2012.01.013.",
+    "[8] 王姣娥, 何宛芩, 黄洁, 等. 中国城乡交通融合的理论内涵与空间格局[J]. 地理学报, 2026, 81(4): 966-985. DOI: 10.11821/dlxb202604003.",
+    "[9] Hägerstrand T. What about people in Regional Science?[J]. Papers of the Regional Science Association, 1970, 24(1): 6-21. DOI: 10.1007/bf01936872.",
+    "[10] Kwan M P. Space‐Time and Integral Measures of Individual Accessibility: A Comparative Analysis Using a Point‐based Framework[J]. Geographical Analysis, 1998, 30(3): 191-216. DOI: 10.1111/j.1538-4632.1998.tb00396.x.",
+    "[11] Boisjoly G, El-Geneidy A. Daily fluctuations in transit and job availability: A comparative assessment of time-sensitive accessibility measures[J]. Journal of Transport Geography, 2016, 52: 73-81. DOI: 10.1016/j.jtrangeo.2016.03.004.",
+    "[12] Farber S, Morang MZ, Widener MJ. Temporal variability in transit-based accessibility to supermarkets[J]. Applied Geography, 2014, 53: 149-159. DOI: 10.1016/j.apgeog.2014.06.012.",
+    "[13] Hongtai Yang, Christopher Cherry. Use characteristics and demographics of rural transit riders: a case study in Tennessee[J]. Transportation Planning and Technology, 2016, 40(2): 213-227. DOI: 10.1080/03081060.2016.1266168.",
+    "[14] Pas E, Koppelman F. An examination of the determinants of day-to-day variability in individuals' urban travel behavior[J]. Transportation, 1987, 14(1). DOI: 10.1007/bf00172463.",
+    "[15] Skinner G W. Marketing and Social Structure in Rural China, Part I[J]. The Journal of Asian Studies, 1964, 24(1): 3-43. DOI: 10.2307/2050412.",
+    "[16] Shao M, Han Y, Zheng B, et al. Grey Relational Model Considering Risk Psychology and Its Application in the Analysis of Influencing Factors of Transportation Carbon Emissions[J]. Advances in Engineering Technology Research, 2026, 17(1): 1. DOI: 10.56028/aetr.17.1.1.2026.",
+    "[17] Weatherford LR, Pölt S. Better unconstraining of airline demand data in revenue management systems for improved forecast accuracy and greater revenues[J]. Journal of Revenue and Pricing Management, 2002, 1(3): 234-254. DOI: 10.1057/palgrave.rpm.5170027.",
+    "[18] 赵阳阳，夏亮，江欣国. 基于经验模态分解与长短时记忆神经网络的短时地铁客流预测模型[J]. 交通运输工程学报, 2020, 20(4): 194-204. DOI: 10.19818/j.cnki.1671-1637.2020.04.016.",
+    "[19] 赵建东，申瑾，刘麟玮. 多源数据驱动CNN-GRU模型的公交客流量分类预测[J]. 交通运输工程学报, 2021, 21(5): 265-273. DOI: 10.19818/j.cnki.1671-1637.2021.05.022.",
+    "[20] Errico F, Crainic TG, Malucelli F, et al. A survey on planning semi-flexible transit systems: Methodological issues and a unifying framework[J]. Transportation Research Part C: Emerging Technologies, 2013, 36: 324-338. DOI: 10.1016/j.trc.2013.08.010.",
+    "[21] 姜晓红，李家伟，严亚丹，等. 考虑动态换乘的农村需求响应公交双向联合调度[J]. 中国公路学报, 2026, 39(8): 422-437. DOI: 10.19721/j.cnki.1001-7372.2026.08.027.",
+    "[22] Elmachtoub A N, Grigas P. Smart “Predict, then Optimize”[J]. Management Science, 2022, 68(1): 9-26. DOI: 10.1287/mnsc.2020.3922.",
+    "[23] Nosek BA, Ebersole CR, DeHaven AC, et al. The preregistration revolution[J]. Proceedings of the National Academy of Sciences, 2018, 115(11): 2600-2606. DOI: 10.1073/pnas.1708274114.",
+    "[24] Roberts D R, Bahn V, Ciuti S, et al. Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure[J]. Ecography, 2017, 40(8): 913-929. DOI: 10.1111/ecog.02881.",
+    "[25] Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science[J]. Patterns, 2023, 4(9): 100804. DOI: 10.1016/j.patter.2023.100804."
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "",
+   "layout_id": "refs",
+   "figure_options": []
+  },
+  {
+   "no": 20,
+   "section": "参考文献",
+   "title": "参考文献（2/2）",
+   "layout": "两栏排版，9—10 磅，悬挂缩进。",
+   "figures": [],
+   "bullets": [
+    "[26] Guo Z, Wilson NHM, Rahbee A. Impact of Weather on Transit Ridership in Chicago, Illinois[J]. Transportation Research Record: Journal of the Transportation Research Board, 2007, 2034(1): 3-10. DOI: 10.3141/2034-01.",
+    "[27] Li J, Cao J. The impact of weather on public bus ridership: empirical findings from Chenzhou, China[J]. Public Transport, 2024, 17(2): 591-610. DOI: 10.1007/s12469-024-00374-7.",
+    "[28] 冯忠祥，刘浩学，张景峰. 农村人口出行方式选择模型[J]. 交通运输工程学报, 2010, 10(3): 77-83. DOI: 10.19818/j.cnki.1671-1637.2010.03.014.",
+    "[29] Hausman J A, Hall B H, Griliches Z. Econometric Models for Count Data with an Application to the Patents-R & D Relationship[J]. Econometrica, 1984, 52(4): 909. DOI: 10.2307/1911191.",
+    "[30] Guo P, Xiao B, Li J. Unconstraining Methods in Revenue Management Systems: Research Overview and Prospects[J]. Advances in Operations Research, 2012, 2012: 1-23. DOI: 10.1155/2012/270910.",
+    "[31] Lipovetsky S, Conklin M. Analysis of regression in game theory approach[J]. Applied Stochastic Models in Business and Industry, 2001, 17(4): 319-330. DOI: 10.1002/asmb.446.",
+    "[32] Grömping U. Estimators of Relative Importance in Linear Regression Based on Variance Decomposition[J]. The American Statistician, 2007, 61(2): 139-147. DOI: 10.1198/000313007x188252.",
+    "[33] Aas K, Jullum M, Løland A. Explaining individual predictions when features are dependent: More accurate approximations to Shapley values[J]. Artificial Intelligence, 2021, 298: 103502. DOI: 10.1016/j.artint.2021.103502.",
+    "[34] Friedman JH. Greedy function approximation: A gradient boosting machine[J]. The Annals of Statistics, 2001, 29(5): 1189-1232. DOI: 10.1214/aos/1013203451.",
+    "[35] Jing Lei, Max G’Sell, Alessandro Rinaldo, et al. Distribution-Free Predictive Inference for Regression[J]. Journal of the American Statistical Association, 2017, 113(523): 1094-1111. DOI: 10.1080/01621459.2017.1307116.",
+    "[36] Anastasios N. Angelopoulos, Stephen Bates. Conformal Prediction: A Gentle Introduction[J]. Foundations and Trends® in Machine Learning, 2023, 16(4): 494-591. DOI: 10.1561/2200000101.",
+    "[37] Hyndman RJ, Koehler AB. Another look at measures of forecast accuracy[J]. International Journal of Forecasting, 2006, 22(4): 679-688. DOI: 10.1016/j.ijforecast.2006.03.001.",
+    "[38] Diebold FX, Mariano RS. Comparing Predictive Accuracy[J]. Journal of Business &amp; Economic Statistics, 1995, 13(3): 253-263. DOI: 10.1080/07350015.1995.10524599.",
+    "[39] Czado C, Gneiting T, Held L. Predictive Model Assessment for Count Data[J]. Biometrics, 2009, 65(4): 1254-1261. DOI: 10.1111/j.1541-0420.2009.01191.x.",
+    "[40] Hadas Y, Shnaiderman M. Public-transit frequency setting using minimum-cost approach with stochastic demand and travel time[J]. Transportation Research Part B Methodological, 2012, 46(8): 1068-1084. DOI: 10.1016/j.trb.2012.02.010.",
+    "[41] Ceder A. Bus frequency determination using passenger count data[J]. Transportation Research Part A: General, 1984, 18(5-6): 439-453. DOI: 10.1016/0191-2607(84)90019-0.",
+    "[42] Ibarra-Rojas OJ, Delgado F, Giesen R, et al. Planning, operation, and control of bus transport systems: A literature review[J]. Transportation Research Part B: Methodological, 2015, 77: 38-75. DOI: 10.1016/j.trb.2015.03.002.",
+    "[43] Gkiotsalitis K, Alesiani F. Robust timetable optimization for bus lines subject to resource and regulatory constraints[J]. Transportation Research Part E: Logistics and Transportation Review, 2019, 128: 30-51. DOI: 10.1016/j.tre.2019.05.016.",
+    "[44] Durán-Micco J, Vansteenwegen P. A survey on the transit network design and frequency setting problem[J]. Public Transport, 2021, 14(1): 155-190. DOI: 10.1007/s12469-021-00284-y.",
+    "[45] 王晓伟，吴松屿，曹恺，等. 多车型混编公交车队发车时刻及车型联合优化[J]. 中国公路学报, 2024, 37(6): 253-266. DOI: 10.19721/j.cnki.1001-7372.2024.06.021.",
+    "[46] Liu Y, Wang G, Jia S. Optimization of Transit Route and Frequency for Integrated Urban-Rural Transit Network[J]. Journal of Advanced Transportation, 2025, 2025(1): 9728885. DOI: 10.1155/atr/9728885.",
+    "[47] Mulley C, Nelson JD. Flexible transport services: A new market opportunity for public transport[J]. Research in Transportation Economics, 2009, 25(1): 39-45. DOI: 10.1016/j.retrec.2009.08.008.",
+    "[48] Currie G, Fournier N. Why most DRT/Micro-Transits fail – What the survivors tell us about progress[J]. Research in Transportation Economics, 2020, 83: 100895. DOI: 10.1016/j.retrec.2020.100895.",
+    "[49] Kleywegt AJ, Shapiro A, Homem-de-Mello T. The Sample Average Approximation Method for Stochastic Discrete Optimization[J]. SIAM Journal on Optimization, 2002, 12(2): 479-502. DOI: 10.1137/s1052623499363220.",
+    "[50] Mishra S, Mehran B, Sahu PK. Assessment of delivery models for semi-flexible transit operation in low-demand conditions[J]. Transport Policy, 2020, 99: 275-287. DOI: 10.1016/j.tranpol.2020.09.004."
+   ],
+   "synthetic": false,
+   "refs": [],
+   "numbers": {},
+   "speaker_notes": "",
+   "layout_id": "refs",
+   "figure_options": []
+  }
+ ],
+ "references": [
+  {
+   "no": 1,
+   "key": "policy2011",
+   "gbt7714": "交通运输部. 关于积极推进城乡道路客运一体化发展的意见: 交运发〔2011〕490号[EB/OL]. (2011-09-13)[2026-09-30]. https://www.gov.cn/zwgk/2011-09/22/content_1953581.htm.",
+   "supports": "国家自 2011 年起推进城乡道路客运一体化",
+   "thesis_no": 1,
+   "verified_by": "nan"
+  },
+  {
+   "no": 2,
+   "key": "policy2024",
+   "gbt7714": "交通运输部办公厅. 交通运输部办公厅关于印发《农村道路客运运营服务指南（试行）》的通知: 交办运函〔2024〕1237号[EB/OL]. (2024-06-24)[2026-09-30]. https://www.gov.cn/zhengce/zhengceku/202406/content_6960241.htm.",
+   "supports": "农村道路客运运营服务指南要求按客流规律灵活安排班次、鼓励预约响应",
+   "thesis_no": 2,
+   "verified_by": "nan"
+  },
+  {
+   "no": 3,
+   "key": "plan15hub",
+   "gbt7714": "交通运输部, 国家发展改革委, 财政部, 等. 关于印发《综合交通枢纽发展“十五五”规划》的通知: 交规划发〔2026〕118号[Z]. 2026-09-10.",
+   "supports": "“十五五”时期综合交通枢纽发展要求",
+   "thesis_no": null,
+   "verified_by": "汇报人提供的规划文件"
+  },
+  {
+   "no": 4,
+   "key": "gong2026",
+   "gbt7714": "宫玉茹, 胡昊宇, 王列, 等. 社会排斥视角下山区农村交通劣势与相对贫困的关系研究——以贵州省黄平县为例[J]. 地理科学进展, 2026, 45(4): 838-852. DOI: 10.18306/dlkxjz.2026.04.012.",
+   "supports": "山区农村交通劣势与相对贫困存在可测关联",
+   "thesis_no": 3,
+   "verified_by": "nan"
+  },
+  {
+   "no": 5,
+   "key": "deng2015",
+   "gbt7714": "邓丽, 邵景安, 郭跃, 等. 基于改进的两步移动搜索法的山区医疗服务空间可达性——以重庆市石柱县为例[J]. 地理科学进展, 2015, 34(6): 716-725. DOI: 10.18306/dlkxjz.2015.06.007.",
+   "supports": "山区医疗服务可达性受交通条件明显限制",
+   "thesis_no": 4,
+   "verified_by": "nan"
+  },
+  {
+   "no": 6,
+   "key": "farrington2005",
+   "gbt7714": "Farrington J, Farrington C. Rural accessibility, social inclusion and social justice: towards conceptualisation[J]. Journal of Transport Geography, 2005, 13(1): 1-12. DOI: 10.1016/j.jtrangeo.2004.10.002.",
+   "supports": "农村可达性与社会包容、社会公正（社会排斥视角）",
+   "thesis_no": 8,
+   "verified_by": "题录"
+  },
+  {
+   "no": 7,
+   "key": "lucas2012",
+   "gbt7714": "Lucas K. Transport and social exclusion: Where are we now?[J]. Transport Policy, 2012, 20: 105-113. DOI: 10.1016/j.tranpol.2012.01.013.",
+   "supports": "交通与社会排斥研究的进展",
+   "thesis_no": 9,
+   "verified_by": "v2注释"
+  },
+  {
+   "no": 8,
+   "key": "wang2026",
+   "gbt7714": "王姣娥, 何宛芩, 黄洁, 等. 中国城乡交通融合的理论内涵与空间格局[J]. 地理学报, 2026, 81(4): 966-985. DOI: 10.11821/dlxb202604003.",
+   "supports": "城乡交通融合的理论内涵与空间格局",
+   "thesis_no": 14,
+   "verified_by": "v2注释"
+  },
+  {
+   "no": 9,
+   "key": "hagerstrand1970",
+   "gbt7714": "Hägerstrand T. What about people in Regional Science?[J]. Papers of the Regional Science Association, 1970, 24(1): 6-21. DOI: 10.1007/bf01936872.",
+   "supports": "时间地理学：能力、组合、权威三类约束",
+   "thesis_no": 19,
+   "verified_by": "v2注释"
+  },
+  {
+   "no": 10,
+   "key": "kwan1998",
+   "gbt7714": "Kwan M P. Space‐Time and Integral Measures of Individual Accessibility: A Comparative Analysis Using a Point‐based Framework[J]. Geographical Analysis, 1998, 30(3): 191-216. DOI: 10.1111/j.1538-4632.1998.tb00396.x.",
+   "supports": "时空可达性测度（个体层面）",
+   "thesis_no": 5,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 11,
+   "key": "boisjoly2016",
+   "gbt7714": "Boisjoly G, El-Geneidy A. Daily fluctuations in transit and job availability: A comparative assessment of time-sensitive accessibility measures[J]. Journal of Transport Geography, 2016, 52: 73-81. DOI: 10.1016/j.jtrangeo.2016.03.004.",
+   "supports": "时间敏感的可达性测度不一致",
+   "thesis_no": 7,
+   "verified_by": "题录"
+  },
+  {
+   "no": 12,
+   "key": "farber2014",
+   "gbt7714": "Farber S, Morang MZ, Widener MJ. Temporal variability in transit-based accessibility to supermarkets[J]. Applied Geography, 2014, 53: 149-159. DOI: 10.1016/j.apgeog.2014.06.012.",
+   "supports": "公交可达性在一天之内随时刻表剧烈波动",
+   "thesis_no": 21,
+   "verified_by": "tldr"
+  },
+  {
+   "no": 13,
+   "key": "yang2016",
+   "gbt7714": "Hongtai Yang, Christopher Cherry. Use characteristics and demographics of rural transit riders: a case study in Tennessee[J]. Transportation Planning and Technology, 2016, 40(2): 213-227. DOI: 10.1080/03081060.2016.1266168.",
+   "supports": "农村公交乘客以老人、学生和无车者为主",
+   "thesis_no": 27,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 14,
+   "key": "pas1987",
+   "gbt7714": "Pas E, Koppelman F. An examination of the determinants of day-to-day variability in individuals' urban travel behavior[J]. Transportation, 1987, 14(1). DOI: 10.1007/bf00172463.",
+   "supports": "个人出行在日与日之间既有习惯性也有变异",
+   "thesis_no": 30,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 15,
+   "key": "skinner1964",
+   "gbt7714": "Skinner G W. Marketing and Social Structure in Rural China, Part I[J]. The Journal of Asian Studies, 1964, 24(1): 3-43. DOI: 10.2307/2050412.",
+   "supports": "定期集市是中国农村社会经济结构的基本单元",
+   "thesis_no": 48,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 16,
+   "key": "shao2026",
+   "gbt7714": "Shao M, Han Y, Zheng B, et al. Grey Relational Model Considering Risk Psychology and Its Application in the Analysis of Influencing Factors of Transportation Carbon Emissions[J]. Advances in Engineering Technology Research, 2026, 17(1): 1. DOI: 10.56028/aetr.17.1.1.2026.",
+   "supports": "灰色关联模型被用于交通影响因素分析（该方法仍在发展）",
+   "thesis_no": 66,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 17,
+   "key": "weatherford2002",
+   "gbt7714": "Weatherford LR, Pölt S. Better unconstraining of airline demand data in revenue management systems for improved forecast accuracy and greater revenues[J]. Journal of Revenue and Pricing Management, 2002, 1(3): 234-254. DOI: 10.1057/palgrave.rpm.5170027.",
+   "supports": "售罄后销售量低估真实需求，需要“需求还原”（收益管理）",
+   "thesis_no": 87,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 18,
+   "key": "cn14",
+   "gbt7714": "赵阳阳，夏亮，江欣国. 基于经验模态分解与长短时记忆神经网络的短时地铁客流预测模型[J]. 交通运输工程学报, 2020, 20(4): 194-204. DOI: 10.19818/j.cnki.1671-1637.2020.04.016.",
+   "supports": "国内客流预测多针对城市地铁短时客流（EMD-LSTM）",
+   "thesis_no": 97,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 19,
+   "key": "cn5",
+   "gbt7714": "赵建东，申瑾，刘麟玮. 多源数据驱动CNN-GRU模型的公交客流量分类预测[J]. 交通运输工程学报, 2021, 21(5): 265-273. DOI: 10.19818/j.cnki.1671-1637.2021.05.022.",
+   "supports": "国内公交客流分类预测（多源数据 CNN-GRU）",
+   "thesis_no": 100,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 20,
+   "key": "errico2013",
+   "gbt7714": "Errico F, Crainic TG, Malucelli F, et al. A survey on planning semi-flexible transit systems: Methodological issues and a unifying framework[J]. Transportation Research Part C: Emerging Technologies, 2013, 36: 324-338. DOI: 10.1016/j.trc.2013.08.010.",
+   "supports": "半柔性公交：保留固定骨架、增加有限柔性",
+   "thesis_no": 164,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 21,
+   "key": "cn23",
+   "gbt7714": "姜晓红，李家伟，严亚丹，等. 考虑动态换乘的农村需求响应公交双向联合调度[J]. 中国公路学报, 2026, 39(8): 422-437. DOI: 10.19721/j.cnki.1001-7372.2026.08.027.",
+   "supports": "国内农村需求响应公交双向联合调度",
+   "thesis_no": 191,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 22,
+   "key": "elmachtoub2022",
+   "gbt7714": "Elmachtoub A N, Grigas P. Smart “Predict, then Optimize”[J]. Management Science, 2022, 68(1): 9-26. DOI: 10.1287/mnsc.2020.3922.",
+   "supports": "“先预测、再优化”忽略预测误差对决策的影响",
+   "thesis_no": 199,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 23,
+   "key": "nosek2018",
+   "gbt7714": "Nosek BA, Ebersole CR, DeHaven AC, et al. The preregistration revolution[J]. Proceedings of the National Academy of Sciences, 2018, 115(11): 2600-2606. DOI: 10.1073/pnas.1708274114.",
+   "supports": "预注册：计算前写下方法与检验方案",
+   "thesis_no": 124,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 24,
+   "key": "roberts2017",
+   "gbt7714": "Roberts D R, Bahn V, Ciuti S, et al. Cross‐validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure[J]. Ecography, 2017, 40(8): 913-929. DOI: 10.1111/ecog.02881.",
+   "supports": "时间结构数据不能随机划分训练与检验集",
+   "thesis_no": 120,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 25,
+   "key": "kapoor2023",
+   "gbt7714": "Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science[J]. Patterns, 2023, 4(9): 100804. DOI: 10.1016/j.patter.2023.100804.",
+   "supports": "数据泄露与机器学习研究的可重复性",
+   "thesis_no": 121,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 26,
+   "key": "guo2007",
+   "gbt7714": "Guo Z, Wilson NHM, Rahbee A. Impact of Weather on Transit Ridership in Chicago, Illinois[J]. Transportation Research Record: Journal of the Transportation Research Board, 2007, 2034(1): 3-10. DOI: 10.3141/2034-01.",
+   "supports": "降雨、低温等天气会减少公交客流，幅度因地区而异",
+   "thesis_no": 55,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 27,
+   "key": "li2024",
+   "gbt7714": "Li J, Cao J. The impact of weather on public bus ridership: empirical findings from Chenzhou, China[J]. Public Transport, 2024, 17(2): 591-610. DOI: 10.1007/s12469-024-00374-7.",
+   "supports": "天气对公交客流的影响（中国郴州实证）",
+   "thesis_no": 63,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 28,
+   "key": "cn10",
+   "gbt7714": "冯忠祥，刘浩学，张景峰. 农村人口出行方式选择模型[J]. 交通运输工程学报, 2010, 10(3): 77-83. DOI: 10.19818/j.cnki.1671-1637.2010.03.014.",
+   "supports": "农村人口出行方式选择受收入、距离和服务水平影响",
+   "thesis_no": 29,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 29,
+   "key": "hausman1984",
+   "gbt7714": "Hausman J A, Hall B H, Griliches Z. Econometric Models for Count Data with an Application to the Patents-R & D Relationship[J]. Econometrica, 1984, 52(4): 909. DOI: 10.2307/1911191.",
+   "supports": "计数数据计量模型（负二项）",
+   "thesis_no": 81,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 30,
+   "key": "guo2012",
+   "gbt7714": "Guo P, Xiao B, Li J. Unconstraining Methods in Revenue Management Systems: Research Overview and Prospects[J]. Advances in Operations Research, 2012, 2012: 1-23. DOI: 10.1155/2012/270910.",
+   "supports": "收益管理中需求还原方法综述",
+   "thesis_no": 88,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 31,
+   "key": "lipovetsky2001",
+   "gbt7714": "Lipovetsky S, Conklin M. Analysis of regression in game theory approach[J]. Applied Stochastic Models in Business and Industry, 2001, 17(4): 319-330. DOI: 10.1002/asmb.446.",
+   "supports": "用 Shapley 值分解回归拟合优度",
+   "thesis_no": 75,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 32,
+   "key": "gromping2007",
+   "gbt7714": "Grömping U. Estimators of Relative Importance in Linear Regression Based on Variance Decomposition[J]. The American Statistician, 2007, 61(2): 139-147. DOI: 10.1198/000313007x188252.",
+   "supports": "基于方差分解的相对重要性估计",
+   "thesis_no": 76,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 33,
+   "key": "aas2021",
+   "gbt7714": "Aas K, Jullum M, Løland A. Explaining individual predictions when features are dependent: More accurate approximations to Shapley values[J]. Artificial Intelligence, 2021, 298: 103502. DOI: 10.1016/j.artint.2021.103502.",
+   "supports": "特征相关时 SHAP 分配受依赖结构影响",
+   "thesis_no": 71,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 34,
+   "key": "friedman2001",
+   "gbt7714": "Friedman JH. Greedy function approximation: A gradient boosting machine[J]. The Annals of Statistics, 2001, 29(5): 1189-1232. DOI: 10.1214/aos/1013203451.",
+   "supports": "梯度提升机（LightGBM 的方法基础）",
+   "thesis_no": 69,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 35,
+   "key": "lei2017",
+   "gbt7714": "Jing Lei, Max G’Sell, Alessandro Rinaldo, et al. Distribution-Free Predictive Inference for Regression[J]. Journal of the American Statistical Association, 2017, 113(523): 1094-1111. DOI: 10.1080/01621459.2017.1307116.",
+   "supports": "无分布假设的预测推断（分裂共形）",
+   "thesis_no": 113,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 36,
+   "key": "angelopoulos2023",
+   "gbt7714": "Anastasios N. Angelopoulos, Stephen Bates. Conformal Prediction: A Gentle Introduction[J]. Foundations and Trends® in Machine Learning, 2023, 16(4): 494-591. DOI: 10.1561/2200000101.",
+   "supports": "共形预测入门与覆盖率保证",
+   "thesis_no": 114,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 37,
+   "key": "hyndman2006",
+   "gbt7714": "Hyndman RJ, Koehler AB. Another look at measures of forecast accuracy[J]. International Journal of Forecasting, 2006, 22(4): 679-688. DOI: 10.1016/j.ijforecast.2006.03.001.",
+   "supports": "预测精度指标的选择",
+   "thesis_no": 122,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 38,
+   "key": "diebold1995",
+   "gbt7714": "Diebold FX, Mariano RS. Comparing Predictive Accuracy[J]. Journal of Business &amp; Economic Statistics, 1995, 13(3): 253-263. DOI: 10.1080/07350015.1995.10524599.",
+   "supports": "Diebold–Mariano 预测精度比较检验",
+   "thesis_no": 123,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 39,
+   "key": "czado2009",
+   "gbt7714": "Czado C, Gneiting T, Held L. Predictive Model Assessment for Count Data[J]. Biometrics, 2009, 65(4): 1254-1261. DOI: 10.1111/j.1541-0420.2009.01191.x.",
+   "supports": "计数数据的预测评价",
+   "thesis_no": 111,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 40,
+   "key": "hadas2012",
+   "gbt7714": "Hadas Y, Shnaiderman M. Public-transit frequency setting using minimum-cost approach with stochastic demand and travel time[J]. Transportation Research Part B Methodological, 2012, 46(8): 1068-1084. DOI: 10.1016/j.trb.2012.02.010.",
+   "supports": "最小成本法：运营成本与乘客等待成本合并为一个目标",
+   "thesis_no": 128,
+   "verified_by": "v2注释"
+  },
+  {
+   "no": 41,
+   "key": "ceder1984",
+   "gbt7714": "Ceder A. Bus frequency determination using passenger count data[J]. Transportation Research Part A: General, 1984, 18(5-6): 439-453. DOI: 10.1016/0191-2607(84)90019-0.",
+   "supports": "基于客流计数确定发车频率",
+   "thesis_no": 126,
+   "verified_by": "tldr"
+  },
+  {
+   "no": 42,
+   "key": "ibarrarojas2015",
+   "gbt7714": "Ibarra-Rojas OJ, Delgado F, Giesen R, et al. Planning, operation, and control of bus transport systems: A literature review[J]. Transportation Research Part B: Methodological, 2015, 77: 38-75. DOI: 10.1016/j.trb.2015.03.002.",
+   "supports": "公交规划、运营与控制综述（时刻表与排班）",
+   "thesis_no": 133,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 43,
+   "key": "gkiotsalitis2019",
+   "gbt7714": "Gkiotsalitis K, Alesiani F. Robust timetable optimization for bus lines subject to resource and regulatory constraints[J]. Transportation Research Part E: Logistics and Transportation Review, 2019, 128: 30-51. DOI: 10.1016/j.tre.2019.05.016.",
+   "supports": "资源约束下的鲁棒时刻表优化",
+   "thesis_no": 134,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 44,
+   "key": "duranmicco2021",
+   "gbt7714": "Durán-Micco J, Vansteenwegen P. A survey on the transit network design and frequency setting problem[J]. Public Transport, 2021, 14(1): 155-190. DOI: 10.1007/s12469-021-00284-y.",
+   "supports": "线网设计与发车频率设定综述",
+   "thesis_no": 130,
+   "verified_by": "仅题录"
+  },
+  {
+   "no": 45,
+   "key": "cn19",
+   "gbt7714": "王晓伟，吴松屿，曹恺，等. 多车型混编公交车队发车时刻及车型联合优化[J]. 中国公路学报, 2024, 37(6): 253-266. DOI: 10.19721/j.cnki.1001-7372.2024.06.021.",
+   "supports": "多车型混编车队发车时刻与车型联合优化（国内）",
+   "thesis_no": 140,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 46,
+   "key": "liu2025",
+   "gbt7714": "Liu Y, Wang G, Jia S. Optimization of Transit Route and Frequency for Integrated Urban-Rural Transit Network[J]. Journal of Advanced Transportation, 2025, 2025(1): 9728885. DOI: 10.1155/atr/9728885.",
+   "supports": "城乡一体化公交线路与频率联合优化",
+   "thesis_no": 148,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 47,
+   "key": "mulley2009",
+   "gbt7714": "Mulley C, Nelson JD. Flexible transport services: A new market opportunity for public transport[J]. Research in Transportation Economics, 2009, 25(1): 39-45. DOI: 10.1016/j.retrec.2009.08.008.",
+   "supports": "柔性交通服务被视为公共交通的新市场机会",
+   "thesis_no": 152,
+   "verified_by": "题录"
+  },
+  {
+   "no": 48,
+   "key": "currie2020",
+   "gbt7714": "Currie G, Fournier N. Why most DRT/Micro-Transits fail – What the survivors tell us about progress[J]. Research in Transportation Economics, 2020, 83: 100895. DOI: 10.1016/j.retrec.2020.100895.",
+   "supports": "多数需求响应项目因成本或客流不足而停办",
+   "thesis_no": 158,
+   "verified_by": "abstract"
+  },
+  {
+   "no": 49,
+   "key": "kleywegt2002",
+   "gbt7714": "Kleywegt AJ, Shapiro A, Homem-de-Mello T. The Sample Average Approximation Method for Stochastic Discrete Optimization[J]. SIAM Journal on Optimization, 2002, 12(2): 479-502. DOI: 10.1137/s1052623499363220.",
+   "supports": "样本平均近似（SAA）方法",
+   "thesis_no": 201,
+   "verified_by": "摘要"
+  },
+  {
+   "no": 50,
+   "key": "mishra2020",
+   "gbt7714": "Mishra S, Mehran B, Sahu PK. Assessment of delivery models for semi-flexible transit operation in low-demand conditions[J]. Transport Policy, 2020, 99: 275-287. DOI: 10.1016/j.tranpol.2020.09.004.",
+   "supports": "低需求条件下半柔性公交交付模式的评估",
+   "thesis_no": 180,
+   "verified_by": "仅题录"
+  }
+ ]
+}
